@@ -2,4 +2,8 @@
     <string name="app_name">Chilaquil Express</string>
     <string name="botonInicio">Tomar Orden</string>
     <string name="descripcionInicio">¡Chilaquiles al gusto!</string>
+    <string name="tipoOrden">Tipo de orden</string>
+    <string name="btnMesa">Por mesa</string>
+    <string name="btnPersona">Por persona</string>
+
 </resources>

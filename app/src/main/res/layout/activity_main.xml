@@ -32,10 +32,10 @@
     
     <Button
         android:id="@+id/btn_tomar_orden"
-        android:layout_width="190dp"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:backgroundTint="@color/rojo"
         android:text="@string/botonInicio"
         android:fontFamily="monospace"
