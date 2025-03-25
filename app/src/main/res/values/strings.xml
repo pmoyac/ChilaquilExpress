@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Chilaquil Express</string>
+    <string name="botonInicio">Tomar Orden</string>
+    <string name="descripcionInicio">¡Chilaquiles al gusto!</string>
 </resources>
