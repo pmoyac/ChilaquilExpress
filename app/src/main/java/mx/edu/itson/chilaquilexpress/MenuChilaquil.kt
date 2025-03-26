@@ -54,6 +54,8 @@ class MenuChilaquil : AppCompatActivity() {
         proteinButtons.forEach { button ->
             button.setOnClickListener {
                 layoutToppings.visibility = View.VISIBLE
+
+
             }
         }
 
@@ -77,6 +79,7 @@ class MenuChilaquil : AppCompatActivity() {
             val mensaje = "Pedido Enviado"
 
             Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 }

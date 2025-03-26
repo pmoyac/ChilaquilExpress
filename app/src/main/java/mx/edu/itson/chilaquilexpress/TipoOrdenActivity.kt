@@ -25,11 +25,13 @@ class TipoOrdenActivity : AppCompatActivity() {
         buttonMesa.setOnClickListener(){
             var intent: Intent = Intent(this, MenuChilaquil::class.java)
             startActivity(intent)
+
         }
 
         buttonPersona.setOnClickListener(){
             var intent: Intent = Intent(this, MenuChilaquil::class.java)
             startActivity(intent)
+
         }
     }
 }
