@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context=".MenuChilaquil">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/rojo"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textAllCaps="true"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:text="@string/personaliza_tus_chilaquiles"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/elige_tu_salsa"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroupSalsa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rbVerde"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/salsa_verde"/>
+
+        <RadioButton
+            android:id="@+id/rbRoja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/salsa_roja"/>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/layoutProteina"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/elige_tu_prote_na"
+            android:textSize="15sp"
+            android:paddingTop="25dp"
+            android:textStyle="bold"/>
+
+        <GridLayout
+            android:id="@+id/gridProteina"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_marginTop="8dp"
+            android:padding="8dp">
+
+                <RadioButton
+                    android:id="@+id/rbPollo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pollo"/>
+
+                <RadioButton
+                    android:id="@+id/rbChorizo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chorizo"/>
+
+                <RadioButton
+                    android:id="@+id/rbFrijoles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/frijoles"/>
+
+                <RadioButton
+                    android:id="@+id/rbChicharron"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chicharron"/>
+
+                <RadioButton
+                    android:id="@+id/rbChilorio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chilorio"/>
+
+                <RadioButton
+                    android:id="@+id/rbCochinita"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cochinita"/>
+        </GridLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutToppings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/elige_tus_toppings"
+            android:textSize="15sp"
+            android:paddingTop="25dp"
+            android:textStyle="bold"/>
+
+        <CheckBox
+            android:id="@+id/cbCrema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/crema"/>
+
+        <CheckBox
+            android:id="@+id/cbQueso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/queso_fresco"/>
+
+        <CheckBox
+            android:id="@+id/cbCilantro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cilantro"/>
+
+        <CheckBox
+            android:id="@+id/cbCebolla"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cebolla"/>
+
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnConfirmar"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/rojo"
+        android:text="@string/confirmar"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:visibility="gone"
+        android:textSize="20sp" />
+
+
+</LinearLayout>

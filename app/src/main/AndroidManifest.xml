@@ -13,6 +13,9 @@
         android:theme="@style/Theme.ChilaquilExpress"
         tools:targetApi="31">
         <activity
+            android:name=".MenuChilaquil"
+            android:exported="false" />
+        <activity
             android:name=".TipoOrdenActivity"
             android:exported="false" />
         <activity

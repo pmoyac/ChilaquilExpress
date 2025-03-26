@@ -5,5 +5,23 @@
     <string name="tipoOrden">Tipo de orden</string>
     <string name="btnMesa">Por mesa</string>
     <string name="btnPersona">Por persona</string>
+    <string name="btnEnviarChilaquil">Enviar Pedido</string>
+    <string name="cebolla">Cebolla</string>
+    <string name="cilantro">Cilantro</string>
+    <string name="queso_fresco">Queso fresco</string>
+    <string name="crema">Crema</string>
+    <string name="elige_tus_toppings">Elige tus toppings:</string>
+    <string name="cochinita">Cochinita</string>
+    <string name="chilorio">Chilorio</string>
+    <string name="chicharron">Chicharron</string>
+    <string name="frijoles">Frijoles</string>
+    <string name="chorizo">Chorizo</string>
+    <string name="pollo">Pollo</string>
+    <string name="elige_tu_prote_na">Elige tu proteína:</string>
+    <string name="salsa_roja">Salsa Roja</string>
+    <string name="salsa_verde">Salsa Verde</string>
+    <string name="elige_tu_salsa">Elige tu salsa:</string>
+    <string name="personaliza_tus_chilaquiles">Personaliza tus chilaquiles</string>
+    <string name="confirmar">Confirmar</string>
 
 </resources>
