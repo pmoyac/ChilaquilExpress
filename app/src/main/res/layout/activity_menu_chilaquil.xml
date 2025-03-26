@@ -6,30 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    android:padding="16dp"
     tools:context=".MenuChilaquil">
-
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/rojo"
-        android:padding="16dp"
+        android:padding="10dp"
         android:textSize="20sp"
         android:textColor="@color/white"
         android:textAllCaps="true"
         android:fontFamily="monospace"
         android:textStyle="bold"
-        android:text="@string/personaliza_tus_chilaquiles"
+        android:text="CHILAQUILES"
         android:textAlignment="center"
         />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/elige_tu_salsa"
-        android:textSize="15sp"
-        android:textStyle="bold"/>
 
     <RadioGroup
         android:id="@+id/radioGroupSalsa"
@@ -40,14 +31,13 @@
             android:id="@+id/rbVerde"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/salsa_verde"/>
+            android:text="Chilaquiles Salsa Roja"/>
 
         <RadioButton
             android:id="@+id/rbRoja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/salsa_roja"/>
-
+            android:text="Chilaquiles Salsa Verde"/>
     </RadioGroup>
 
     <LinearLayout
