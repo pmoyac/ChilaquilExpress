@@ -35,6 +35,10 @@ class ProductosActivity : AppCompatActivity() {
         val adaptadorChilaquiles = AdaptadorProductos(this, ArrayList(chilaquiles))
         listChilaquiles.adapter = adaptadorChilaquiles
 
+        val drinks = menu.filter { it.categoria == "Bebidas" }
+        val adaptadorDrinks = AdaptadorProductos(this, ArrayList(drinks))
+        listBebidas.adapter = adaptadorDrinks
+
         listChilaquiles.setOnItemClickListener { parent, view, position, id ->
             val chilaquilSeleccionado = chilaquiles[position]
 
@@ -43,6 +47,15 @@ class ProductosActivity : AppCompatActivity() {
             // Pasar datos del producto seleccionado
             intent.putExtra("nombre", chilaquilSeleccionado.nombre)
             intent.putExtra("precio", chilaquilSeleccionado.precio)
+
+            startActivity(intent)
+        }
+        listBebidas.setOnItemClickListener{ parentActivityIntent, view, position, id ->
+            val bebidaSeleccionada = drinks[position]
+
+            val intent = Intent(this, OrdenMenu::class.java)
+            intent.putExtra("nombre", bebidaSeleccionada.nombre)
+            intent.putExtra("precio", bebidaSeleccionada.precio)
 
             startActivity(intent)
         }

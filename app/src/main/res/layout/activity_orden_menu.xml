@@ -51,7 +51,8 @@
         android:background="@color/white"
 
         >
-        <GridView
+        <ListView
+            android:id="@+id/listProductos"
             android:layout_width="match_parent"
             android:layout_height="520dp"
             />
