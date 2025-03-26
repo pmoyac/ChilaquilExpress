@@ -1,6 +1,7 @@
 package mx.edu.itson.chilaquilexpress
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,18 @@ class ProductosActivity : AppCompatActivity() {
         val chilaquiles = menu.filter { it.categoria == "Chilaquiles" }
         val adaptadorChilaquiles = AdaptadorProductos(this, ArrayList(chilaquiles))
         listChilaquiles.adapter = adaptadorChilaquiles
+
+        listChilaquiles.setOnItemClickListener { parent, view, position, id ->
+            val chilaquilSeleccionado = chilaquiles[position]
+
+            val intent = Intent(this, MenuChilaquil::class.java)
+
+            // Pasar datos del producto seleccionado
+            intent.putExtra("nombre", chilaquilSeleccionado.nombre)
+            intent.putExtra("precio", chilaquilSeleccionado.precio)
+
+            startActivity(intent)
+        }
 
         val bebidas = menu.filter { it.categoria == "Bebidas" }
         val adaptadorBebidas = AdaptadorProductos(this, ArrayList(bebidas))

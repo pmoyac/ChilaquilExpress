@@ -25,5 +25,7 @@
     <string name="confirmar">Confirmar</string>
     <string name="bebidas">BEBIDAS</string>
     <string name="chilaquiles">CHILAQUILES</string>
+    <string name="proteinas">PROTEÍNAS</string>
+    <string name="toppings">TOPPINGS</string>
 
 </resources>
