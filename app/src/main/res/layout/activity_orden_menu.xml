@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrdenMenu">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/logo"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Orden Actual"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/rojo"
+            android:textSize="40sp"
+            android:layout_marginTop="35dp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/rojo"
+        android:textColor="@color/rojo"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="5dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+
+        >
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="520dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/rojo"
+            android:textColor="@color/rojo"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            >
+            <Button
+                android:id="@+id/btnAgregarProducto"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:text="Agregar Producto"
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/round_button"
+                android:textSize="16sp"
+                />
+
+            <Button
+                android:id="@+id/btnFinalizar"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:text="Finalizar \nOrden"
+                android:layout_marginLeft="78dp"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:background="@drawable/round_button"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

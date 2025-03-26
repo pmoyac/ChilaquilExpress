@@ -40,10 +40,12 @@ class MenuChilaquil : AppCompatActivity() {
 
 
         btnConfirmar.setOnClickListener {
-            val mensaje = "Pedido Enviado"
-
+            val mensaje = "Continue"
+            var intent: Intent = Intent(this, OrdenMenu::class.java)
+            startActivity(intent)
+            /*
             Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
-            finish()
+            finish()*/
         }
     }
 }
