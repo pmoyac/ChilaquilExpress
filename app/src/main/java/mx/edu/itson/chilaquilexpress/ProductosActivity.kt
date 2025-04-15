@@ -53,7 +53,7 @@ class ProductosActivity : AppCompatActivity() {
         listBebidas.setOnItemClickListener{ parentActivityIntent, view, position, id ->
             val bebidaSeleccionada = drinks[position]
 
-            val intent = Intent(this, OrdenMenu::class.java)
+            val intent = Intent(this, OrdenActual::class.java)
             intent.putExtra("nombre", bebidaSeleccionada.nombre)
             intent.putExtra("precio", bebidaSeleccionada.precio)
 

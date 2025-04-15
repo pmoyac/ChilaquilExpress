@@ -2,18 +2,11 @@ package mx.edu.itson.chilaquilexpress
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MenuChilaquil : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +34,7 @@ class MenuChilaquil : AppCompatActivity() {
 
         btnConfirmar.setOnClickListener {
             val mensaje = "Continue"
-            var intent: Intent = Intent(this, OrdenMenu::class.java)
+            var intent: Intent = Intent(this, OrdenActual::class.java)
             startActivity(intent)
             /*
             Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
