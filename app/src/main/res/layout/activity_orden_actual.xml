@@ -19,7 +19,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerInside"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/logo"
             />
 
@@ -27,11 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Orden Actual"
-            android:fontFamily="sans-serif-light"
+            android:fontFamily="monospace"
+            android:textAllCaps="true"
             android:textColor="@color/rojo"
-            android:textSize="40sp"
-            android:layout_marginTop="35dp"
+            android:textSize="37sp"
             android:textStyle="bold"
+            android:layout_gravity="center"
             />
 
     </LinearLayout>
@@ -54,7 +54,7 @@
         <ListView
             android:id="@+id/listProductos"
             android:layout_width="match_parent"
-            android:layout_height="520dp"
+            android:layout_height="620dp"
             />
 
         <View
@@ -77,6 +77,8 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:text="Agregar Producto"
+                android:fontFamily="monospace"
+                android:textAllCaps="true"
                 android:textStyle="bold"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/round_button"
@@ -87,7 +89,9 @@
                 android:id="@+id/btnFinalizar"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:text="Finalizar \nOrden"
+                android:text="Finalizar Orden"
+                android:fontFamily="monospace"
+                android:textAllCaps="true"
                 android:layout_marginLeft="78dp"
                 android:textStyle="bold"
                 android:textSize="16sp"

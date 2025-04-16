@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@color/white"
+    android:layout_marginTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/itemImagen"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/itemNombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nombre Producto"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp" />
+
+        <Button
+            android:id="@+id/btnMenos"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="-"
+            android:textSize="20sp"
+            android:padding="0dp"
+            android:background="@drawable/round_button2"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/txtCantidad"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="16sp"
+            android:layout_marginHorizontal="5dp" />
+
+        <Button
+            android:id="@+id/btnMas"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="+"
+            android:textSize="18sp"
+            android:padding="0dp"
+            android:background="@drawable/round_button2"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/toppingsProteinas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Toppings: N/A | Proteínas: N/A"
+        android:textSize="14sp"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/itemPrecio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Precio: $0.00"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold" />
+</LinearLayout>

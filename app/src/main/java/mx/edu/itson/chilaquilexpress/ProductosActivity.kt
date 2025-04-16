@@ -1,5 +1,4 @@
 package mx.edu.itson.chilaquilexpress
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,37 +34,40 @@ class ProductosActivity : AppCompatActivity() {
         val adaptadorChilaquiles = AdaptadorProductos(this, ArrayList(chilaquiles))
         listChilaquiles.adapter = adaptadorChilaquiles
 
-        val drinks = menu.filter { it.categoria == "Bebidas" }
-        val adaptadorDrinks = AdaptadorProductos(this, ArrayList(drinks))
-        listBebidas.adapter = adaptadorDrinks
+        val bebidas = menu.filter { it.categoria == "Bebidas" }
+        val adaptadorBebidas = AdaptadorProductos(this, ArrayList(bebidas))
+        listBebidas.adapter = adaptadorBebidas
 
         listChilaquiles.setOnItemClickListener { parent, view, position, id ->
             val chilaquilSeleccionado = chilaquiles[position]
 
             val intent = Intent(this, MenuChilaquil::class.java)
 
-            // Pasar datos del producto seleccionado
             intent.putExtra("nombre", chilaquilSeleccionado.nombre)
             intent.putExtra("precio", chilaquilSeleccionado.precio)
 
             startActivity(intent)
         }
-        listBebidas.setOnItemClickListener{ parentActivityIntent, view, position, id ->
-            val bebidaSeleccionada = drinks[position]
 
+        listBebidas.setOnItemClickListener { parent, view, position, id ->
+            val bebidaSeleccionada = bebidas[position]
+
+            val producto = Producto(
+                imagen = bebidaSeleccionada.imagen,
+                nombre = bebidaSeleccionada.nombre,
+                descripcion = bebidaSeleccionada.descripcion,
+                precio = bebidaSeleccionada.precio,
+                categoria = bebidaSeleccionada.categoria,
+                cantidad = 1
+            )
+
+            OrdenManager.agregarProducto(producto)
             val intent = Intent(this, OrdenActual::class.java)
-            intent.putExtra("nombre", bebidaSeleccionada.nombre)
-            intent.putExtra("precio", bebidaSeleccionada.precio)
-
             startActivity(intent)
         }
-
-        val bebidas = menu.filter { it.categoria == "Bebidas" }
-        val adaptadorBebidas = AdaptadorProductos(this, ArrayList(bebidas))
-        listBebidas.adapter = adaptadorBebidas
     }
 
-    fun agregarProductos(){
+    fun agregarProductos() {
         menu.add(Producto(R.drawable.chilaquiles, "Chilaquiles Salsa Verde",
             "Chilaquiles en salsa verde con Proteínas y Toppings a elegir", 50.00, "Chilaquiles"))
         menu.add(Producto(R.drawable.chilaquiles, "Chilaquiles Salsa Roja"
@@ -83,7 +85,7 @@ class ProductosActivity : AppCompatActivity() {
             "Refreso Coca-Cola 600 ml", 20.00, "Bebidas"))
     }
 
-    private class AdaptadorProductos : BaseAdapter{
+    private class AdaptadorProductos : BaseAdapter {
         var productos = ArrayList<Producto>()
         var contexto: Context?=null
 
@@ -105,7 +107,7 @@ class ProductosActivity : AppCompatActivity() {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            var prod = productos [position]
+            var prod = productos[position]
             var inflador = LayoutInflater.from(contexto)
             var vista = inflador.inflate(R.layout.producto_view, null)
 
@@ -121,6 +123,4 @@ class ProductosActivity : AppCompatActivity() {
             return vista
         }
     }
-
-
 }

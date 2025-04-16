@@ -8,15 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class OrdenActual : AppCompatActivity() {
-    var orden: ArrayList<Producto> = ArrayList<Producto>()
+    private lateinit var adaptadorProductos: AdaptadorOrder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,34 +32,45 @@ class OrdenActual : AppCompatActivity() {
             insets
         }
 
-        val productos = orden
+        val productos = OrdenManager.productosEnOrden
+
         val listProductos: ListView = findViewById(R.id.listProductos)
-        val adaptadorProductos = AdaptadorOrder(this, productos)
+        adaptadorProductos = AdaptadorOrder(this, productos)
         listProductos.adapter = adaptadorProductos
 
         val btnFinalizar: Button = findViewById(R.id.btnFinalizar)
         val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
 
         btnFinalizar.setOnClickListener {
-            var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
-            startActivity(intent)
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Confirmar orden")
+            builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
+
+            builder.setPositiveButton("Sí") { dialog, which ->
+                OrdenManager.limpiarOrden()
+                Toast.makeText(this, "Orden finalizada con éxito", Toast.LENGTH_LONG).show()
+
+                val intent = Intent(this, TipoOrdenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+
+            builder.setNegativeButton("Cancelar") { dialog, which ->
+                // No hacer nada si el usuario cancela
+                dialog.dismiss()
+            }
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
         btnAgregar.setOnClickListener {
             var intent: Intent = Intent(this, ProductosActivity::class.java)
             startActivity(intent)
         }
-
     }
-    private class AdaptadorOrder : BaseAdapter{
-        var productos = ArrayList<Producto>()
-        var contexto: Context?=null
 
-        constructor(contexto : Context, producto : ArrayList<Producto>){
-            this.productos = producto
-            this.contexto = contexto
-        }
-
+    private inner class AdaptadorOrder(val contexto: Context, val productos: List<Producto>) : BaseAdapter() {
         override fun getCount(): Int {
             return productos.size
         }
@@ -69,17 +84,48 @@ class OrdenActual : AppCompatActivity() {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            var prod = productos [position]
-            var inflador = LayoutInflater.from(contexto)
-            var vista = inflador.inflate(R.layout.producto_view, null)
+            val prod = productos[position]
+            val inflador = LayoutInflater.from(contexto)
 
-            var nombre = vista.findViewById(R.id.producto_nombre) as TextView
-            var desc = vista.findViewById(R.id.producto_desc) as TextView
-            var precio = vista.findViewById(R.id.producto_precio) as TextView
+            val vista = inflador.inflate(R.layout.item_producto, null)
 
-            nombre.setText(prod.nombre)
-            desc.setText(prod.descripcion)
-            precio.setText("$${prod.precio}")
+            val nombre = vista.findViewById<TextView>(R.id.itemNombre)
+            val precio = vista.findViewById<TextView>(R.id.itemPrecio)
+            val imagen = vista.findViewById<ImageView>(R.id.itemImagen)
+            val toppingsProteinas = vista.findViewById<TextView>(R.id.toppingsProteinas)
+            val txtCantidad = vista.findViewById<TextView>(R.id.txtCantidad)
+            val btnMas = vista.findViewById<Button>(R.id.btnMas)
+            val btnMenos = vista.findViewById<Button>(R.id.btnMenos)
+
+            nombre.text = prod.nombre
+            precio.text = "Total: $${prod.precio * prod.cantidad}"
+            imagen.setImageResource(prod.imagen)
+            txtCantidad.text = prod.cantidad.toString()
+
+            if (prod.categoria == "Chilaquiles") {
+                val proteinasTexto = if (prod.proteinas.isNotEmpty()) prod.proteinas.joinToString(", ") else "Ninguna"
+                val toppingsTexto = if (prod.toppings.isNotEmpty()) prod.toppings.joinToString(", ") else "Ninguno"
+                toppingsProteinas.text = "Proteínas: $proteinasTexto | Toppings: $toppingsTexto"
+            } else {
+                toppingsProteinas.visibility = View.GONE
+            }
+
+            btnMas.setOnClickListener {
+                OrdenManager.incrementarCantidad(position)
+                notifyDataSetChanged()
+            }
+
+            btnMenos.setOnClickListener {
+                val mantenerProducto = OrdenManager.decrementarCantidad(position)
+                if (!mantenerProducto) {
+                    // Si el producto fue eliminado, actualizar el layout
+                    notifyDataSetChanged()
+                } else {
+                    txtCantidad.text = prod.cantidad.toString()
+                    precio.text = "Precio: $${prod.precio * prod.cantidad}"
+                }
+            }
+
             return vista
         }
     }

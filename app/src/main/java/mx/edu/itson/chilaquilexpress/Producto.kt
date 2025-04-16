@@ -1,8 +1,14 @@
 package mx.edu.itson.chilaquilexpress
 
-data class Producto(var imagen: Int,
-                    var nombre: String,
-                    var descripcion: String,
-                    var precio: Double,
-                    var categoria: String){
-}
+import java.io.Serializable
+
+data class Producto(
+    var imagen: Int,
+    var nombre: String,
+    var descripcion: String,
+    var precio: Double,
+    var categoria: String,
+    var cantidad: Int = 1,
+    var toppings: List<String> = emptyList(),
+    var proteinas: List<String> = emptyList()
+) : Serializable

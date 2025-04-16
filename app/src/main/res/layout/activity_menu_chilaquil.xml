@@ -115,7 +115,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:backgroundTint="@color/rojo"
-        android:text="@string/confirmar"
+        android:text="@string/agregar"
         android:fontFamily="monospace"
         android:textStyle="bold"
         android:textAllCaps="true"
