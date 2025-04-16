@@ -35,40 +35,54 @@
             />
 
         <CheckBox
-            android:id="@+id/cbPollo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pollo"/>
-
-        <CheckBox
             android:id="@+id/cbFrijoles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/frijoles"/>
+            android:textSize="16sp"
+            android:text="@string/frijoles"
+            />
 
         <CheckBox
-            android:id="@+id/cbChicharron"
+            android:id="@+id/cbPollo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/chicharron"/>
+            android:textSize="16sp"
+            android:text="@string/pollo"/>
+
+        <CheckBox
+            android:id="@+id/cbAdobada"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/adobada"/>
 
         <CheckBox
             android:id="@+id/cbChorizo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:text="@string/chorizo"/>
 
         <CheckBox
             android:id="@+id/cbChilorio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:text="@string/chilorio"/>
 
         <CheckBox
             android:id="@+id/cbCochinita"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:text="@string/cochinita"/>
+
+        <CheckBox
+            android:id="@+id/cbChicharron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/chicharron"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -88,24 +102,32 @@
             android:id="@+id/cbCrema"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="@string/crema"/>
 
         <CheckBox
             android:id="@+id/cbQueso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="@string/queso_fresco"/>
 
         <CheckBox
             android:id="@+id/cbCilantro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="@string/cilantro"/>
 
         <CheckBox
             android:id="@+id/cbCebolla"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="@string/cebolla"/>
 
     <Button

@@ -7,6 +7,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 
 class MenuChilaquil : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +24,18 @@ class MenuChilaquil : AppCompatActivity() {
         val cbPollo = findViewById<CheckBox>(R.id.cbPollo)
         val cbFrijoles = findViewById<CheckBox>(R.id.cbFrijoles)
         val cbChicharron = findViewById<CheckBox>(R.id.cbChicharron)
+        val cbAdobada = findViewById<CheckBox>(R.id.cbAdobada)
         val cbChorizo = findViewById<CheckBox>(R.id.cbChorizo)
         val cbChilorio = findViewById<CheckBox>(R.id.cbChilorio)
         val cbCochinita = findViewById<CheckBox>(R.id.cbCochinita)
+
+        cbFrijoles.text = HtmlCompat.fromHtml(getString(R.string.frijoles), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbPollo.text = HtmlCompat.fromHtml(getString(R.string.pollo), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbAdobada.text = HtmlCompat.fromHtml(getString(R.string.adobada), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbChorizo.text = HtmlCompat.fromHtml(getString(R.string.chorizo), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbChilorio.text = HtmlCompat.fromHtml(getString(R.string.chilorio), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbChicharron.text = HtmlCompat.fromHtml(getString(R.string.chicharron), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        cbCochinita.text = HtmlCompat.fromHtml(getString(R.string.cochinita), HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         val cbCrema = findViewById<CheckBox>(R.id.cbCrema)
         val cbQueso = findViewById<CheckBox>(R.id.cbQueso)
@@ -36,6 +46,7 @@ class MenuChilaquil : AppCompatActivity() {
             val proteinasSeleccionadas = mutableListOf<String>()
             if (cbPollo.isChecked) proteinasSeleccionadas.add("Pollo")
             if (cbFrijoles.isChecked) proteinasSeleccionadas.add("Frijoles")
+            if (cbAdobada.isChecked) proteinasSeleccionadas.add("Adobada")
             if (cbChicharron.isChecked) proteinasSeleccionadas.add("Chicharrón")
             if (cbChorizo.isChecked) proteinasSeleccionadas.add("Chorizo")
             if (cbChilorio.isChecked) proteinasSeleccionadas.add("Chilorio")
