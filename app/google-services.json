@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "970273087871",
+    "project_id": "chilaquilexpress-dafa5",
+    "storage_bucket": "chilaquilexpress-dafa5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970273087871:android:602388cf9af66c13837a4a",
+        "android_client_info": {
+          "package_name": "mx.edu.itson.chilaquilexpress"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM6UutEHLGl355DMENzn0T5Z_ZidLaUu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
