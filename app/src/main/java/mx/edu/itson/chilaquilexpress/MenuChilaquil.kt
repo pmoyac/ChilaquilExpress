@@ -16,7 +16,7 @@ class MenuChilaquil : AppCompatActivity() {
         setContentView(R.layout.activity_menu_chilaquil)
 
         val nombre = intent.getStringExtra("nombre") ?: ""
-        val precioBase = intent.getDoubleExtra("precio", 0.0)
+        val precioBase = intent.getIntExtra("costo", 0)
         findViewById<TextView>(R.id.tipoChilaquil).text = "$nombre $${precioBase}"
 
         val btnConfirmar = findViewById<Button>(R.id.btnConfirmar)
@@ -24,14 +24,12 @@ class MenuChilaquil : AppCompatActivity() {
         val cbPollo = findViewById<CheckBox>(R.id.cbPollo)
         val cbFrijoles = findViewById<CheckBox>(R.id.cbFrijoles)
         val cbChicharron = findViewById<CheckBox>(R.id.cbChicharron)
-        val cbAdobada = findViewById<CheckBox>(R.id.cbAdobada)
         val cbChorizo = findViewById<CheckBox>(R.id.cbChorizo)
         val cbChilorio = findViewById<CheckBox>(R.id.cbChilorio)
         val cbCochinita = findViewById<CheckBox>(R.id.cbCochinita)
 
         cbFrijoles.text = HtmlCompat.fromHtml(getString(R.string.frijoles), HtmlCompat.FROM_HTML_MODE_LEGACY)
         cbPollo.text = HtmlCompat.fromHtml(getString(R.string.pollo), HtmlCompat.FROM_HTML_MODE_LEGACY)
-        cbAdobada.text = HtmlCompat.fromHtml(getString(R.string.adobada), HtmlCompat.FROM_HTML_MODE_LEGACY)
         cbChorizo.text = HtmlCompat.fromHtml(getString(R.string.chorizo), HtmlCompat.FROM_HTML_MODE_LEGACY)
         cbChilorio.text = HtmlCompat.fromHtml(getString(R.string.chilorio), HtmlCompat.FROM_HTML_MODE_LEGACY)
         cbChicharron.text = HtmlCompat.fromHtml(getString(R.string.chicharron), HtmlCompat.FROM_HTML_MODE_LEGACY)
@@ -46,7 +44,6 @@ class MenuChilaquil : AppCompatActivity() {
             val proteinasSeleccionadas = mutableListOf<String>()
             if (cbPollo.isChecked) proteinasSeleccionadas.add("Pollo")
             if (cbFrijoles.isChecked) proteinasSeleccionadas.add("Frijoles")
-            if (cbAdobada.isChecked) proteinasSeleccionadas.add("Adobada")
             if (cbChicharron.isChecked) proteinasSeleccionadas.add("Chicharrón")
             if (cbChorizo.isChecked) proteinasSeleccionadas.add("Chorizo")
             if (cbChilorio.isChecked) proteinasSeleccionadas.add("Chilorio")
@@ -67,7 +64,7 @@ class MenuChilaquil : AppCompatActivity() {
                 imagen = R.drawable.chilaquiles,
                 nombre = nombre,
                 descripcion = "Chilaquiles personalizados",
-                precio = precioTotal,
+                costo = precioTotal,
                 categoria = "Chilaquiles",
                 cantidad = 1,
                 toppings = toppingsSeleccionados,

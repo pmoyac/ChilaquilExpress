@@ -1,4 +1,5 @@
 package mx.edu.itson.chilaquilexpress
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +14,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ProductosActivity : AppCompatActivity() {
-    var menu: ArrayList<Producto> = ArrayList<Producto>()
+    var menu: ArrayList<Producto> = ArrayList()
+    lateinit var listChilaquiles: ListView
+    lateinit var listBebidas: ListView
+    lateinit var adaptadorChilaquiles: AdaptadorProductos
+    lateinit var adaptadorBebidas: AdaptadorProductos
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,101 +32,109 @@ class ProductosActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        agregarProductos()
-        var listChilaquiles: ListView = findViewById(R.id.listChilaquiles) as ListView
-        var listBebidas: ListView = findViewById(R.id.listBebidas) as ListView
 
-        val chilaquiles = menu.filter { it.categoria == "Chilaquiles" }
-        val adaptadorChilaquiles = AdaptadorProductos(this, ArrayList(chilaquiles))
-        listChilaquiles.adapter = adaptadorChilaquiles
+        listChilaquiles = findViewById(R.id.listChilaquiles)
+        listBebidas = findViewById(R.id.listBebidas)
 
-        val bebidas = menu.filter { it.categoria == "Bebidas" }
-        val adaptadorBebidas = AdaptadorProductos(this, ArrayList(bebidas))
-        listBebidas.adapter = adaptadorBebidas
+        cargarProductosLocales()
+        cargarBebidasDesdeFirestore()
 
-        listChilaquiles.setOnItemClickListener { parent, view, position, id ->
-            val chilaquilSeleccionado = chilaquiles[position]
-
+        listChilaquiles.setOnItemClickListener { _, _, position, _ ->
+            val chilaquilSeleccionado = adaptadorChilaquiles.productos[position]
             val intent = Intent(this, MenuChilaquil::class.java)
-
             intent.putExtra("nombre", chilaquilSeleccionado.nombre)
-            intent.putExtra("precio", chilaquilSeleccionado.precio)
-
+            intent.putExtra("costo", chilaquilSeleccionado.costo)
             startActivity(intent)
         }
 
-        listBebidas.setOnItemClickListener { parent, view, position, id ->
-            val bebidaSeleccionada = bebidas[position]
-
+        listBebidas.setOnItemClickListener { _, _, position, _ ->
+            val bebidaSeleccionada = adaptadorBebidas.productos[position]
             val producto = Producto(
                 imagen = bebidaSeleccionada.imagen,
                 nombre = bebidaSeleccionada.nombre,
                 descripcion = bebidaSeleccionada.descripcion,
-                precio = bebidaSeleccionada.precio,
+                costo = bebidaSeleccionada.costo,
                 categoria = bebidaSeleccionada.categoria,
                 cantidad = 1
             )
-
             OrdenManager.agregarProducto(producto)
-            val intent = Intent(this, OrdenActual::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, OrdenActual::class.java))
         }
     }
 
-    fun agregarProductos() {
-        menu.add(Producto(R.drawable.chilaquiles, "Chilaquiles Salsa Verde",
-            "Chilaquiles en salsa verde con Proteínas y Toppings a elegir", 50.00, "Chilaquiles"))
-        menu.add(Producto(R.drawable.chilaquiles, "Chilaquiles Salsa Roja"
-            , "Chilaquiles en salsa roja con Proteínas y Toppings a elegir", 50.00, "Chilaquiles"))
+    private fun cargarProductosLocales() {
+        val chilaquiles = arrayListOf(
+            Producto(
+                R.drawable.chilaquiles, "Chilaquiles Salsa Verde",
+                "Chilaquiles en salsa verde con Proteínas y Toppings a elegir", 50, "Chilaquiles"
+            ),
+            Producto(
+                R.drawable.chilaquiles, "Chilaquiles Salsa Roja",
+                "Chilaquiles en salsa roja con Proteínas y Toppings a elegir", 50, "Chilaquiles"
+            )
+        )
+        menu.addAll(chilaquiles)
 
-        menu.add(Producto(R.drawable.jamaica, "Jamaica",
-            "Agua natural de jamaica 600 ml", 20.00, "Bebidas"))
-        menu.add(Producto(R.drawable.pina, "Piña",
-            "Agua natural de piña 600 ml", 20.00, "Bebidas"))
-        menu.add(Producto(R.drawable.cebada, "Cebada",
-            "Agua natural de cebada 600 ml", 20.00, "Bebidas"))
-        menu.add(Producto(R.drawable.horchata, "Horchata",
-            "Agua natural de horchata 600 ml", 20.00, "Bebidas"))
-        menu.add(Producto(R.drawable.cocacola, "Cola-Cola",
-            "Refreso Coca-Cola 600 ml", 20.00, "Bebidas"))
+        adaptadorChilaquiles = AdaptadorProductos(this, chilaquiles)
+        listChilaquiles.adapter = adaptadorChilaquiles
     }
 
-    private class AdaptadorProductos : BaseAdapter {
-        var productos = ArrayList<Producto>()
-        var contexto: Context?=null
+    private fun cargarBebidasDesdeFirestore() {
+        adaptadorBebidas = AdaptadorProductos(this, ArrayList())
+        listBebidas.adapter = adaptadorBebidas
 
-        constructor(contexto : Context, producto : ArrayList<Producto>){
-            this.productos = producto
-            this.contexto = contexto
-        }
+        val db = FirebaseFirestore.getInstance()
+        db.collection("bebidas").get().addOnSuccessListener { result ->
+            val bebidasFirestore = result.documents.mapNotNull { doc ->
+                val id = doc.getString("id") ?: return@mapNotNull null
+                val nombre = doc.getString("nombre") ?: return@mapNotNull null
+                val costo = doc.getLong("costo")?.toInt() ?: return@mapNotNull null
 
-        override fun getCount(): Int {
-            return productos.size
-        }
+                val imageResId = getImageResourceByName(id)
+                Producto(
+                    imagen = imageResId,
+                    nombre = nombre,
+                    descripcion = "Bebida de $nombre",
+                    costo = costo,
+                    categoria = "Bebidas"
+                )
+            }
 
-        override fun getItem(position: Int): Any {
-            return productos[position]
+            // Actualizar datos del adaptador
+            adaptadorBebidas.productos.clear()
+            adaptadorBebidas.productos.addAll(bebidasFirestore)
+            adaptadorBebidas.notifyDataSetChanged()
         }
+    }
 
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
+    private fun getImageResourceByName(name: String): Int {
+        return resources.getIdentifier(name, "drawable", packageName)
+    }
+
+    class AdaptadorProductos(
+        private val contexto: Context,
+        val productos: ArrayList<Producto>
+    ) : BaseAdapter() {
+
+        override fun getCount(): Int = productos.size
+
+        override fun getItem(position: Int): Any = productos[position]
+
+        override fun getItemId(position: Int): Long = position.toLong()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            var prod = productos[position]
-            var inflador = LayoutInflater.from(contexto)
-            var vista = inflador.inflate(R.layout.producto_view, null)
+            val producto = productos[position]
+            val vista = LayoutInflater.from(contexto).inflate(R.layout.producto_view, null)
+            val imagen = vista.findViewById<ImageView>(R.id.producto_img)
+            val nombre = vista.findViewById<TextView>(R.id.producto_nombre)
+            val desc = vista.findViewById<TextView>(R.id.producto_desc)
+            val precio = vista.findViewById<TextView>(R.id.producto_precio)
 
-            var imagen = vista.findViewById(R.id.producto_img) as ImageView
-            var nombre = vista.findViewById(R.id.producto_nombre) as TextView
-            var desc = vista.findViewById(R.id.producto_desc) as TextView
-            var precio = vista.findViewById(R.id.producto_precio) as TextView
-
-            imagen.setImageResource(prod.imagen)
-            nombre.setText(prod.nombre)
-            desc.setText(prod.descripcion)
-            precio.setText("$${prod.precio}")
+            imagen.setImageResource(producto.imagen)
+            nombre.text = producto.nombre
+            desc.text = producto.descripcion
+            precio.text = "$${producto.costo}"
             return vista
+            }
         }
-    }
 }

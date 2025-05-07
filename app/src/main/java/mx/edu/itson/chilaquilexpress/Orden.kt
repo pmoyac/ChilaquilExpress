@@ -11,16 +11,16 @@ data class Orden(
     val chilaquiles: List<Chilaquil>,
     val bebidas: List<Bebida>,
     val fecha: String = obtenerFechaActual(),
-    var costoTotal: Double
+    var costoTotal: Int=0
 ){
     fun calcularCostoTotal() {
-        val costoBebidas = bebidas.sumOf { it.precio }
+        val costoBebidas = bebidas.sumOf { it.costo }
         val costoChilaquiles = chilaquiles.sumOf { it.costoTotal }
         costoTotal = costoBebidas + costoChilaquiles
     }
 }
 
 fun obtenerFechaActual(): String {
-    val formato = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+    val formato = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
     return formato.format(Date())
 }

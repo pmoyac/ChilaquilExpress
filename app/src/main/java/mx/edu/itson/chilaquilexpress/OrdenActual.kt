@@ -8,24 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OrdenActual : AppCompatActivity() {
     private lateinit var adaptadorProductos: AdaptadorOrder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_orden_actual)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -47,46 +47,50 @@ class OrdenActual : AppCompatActivity() {
             builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
 
             builder.setPositiveButton("Sí") { dialog, which ->
-                OrdenManager.limpiarOrden()
-                Toast.makeText(this, "Orden finalizada con éxito", Toast.LENGTH_LONG).show()
+                val db = FirebaseFirestore.getInstance()
 
-                val intent = Intent(this, TipoOrdenActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
+                val orden = hashMapOf(
+                    "id" to System.currentTimeMillis().toString(),
+                    "tipo" to "persona", // o "mesa", según tu lógica
+                    "identificador" to "mesa_1", // puedes cambiarlo dinámicamente
+                    "fecha" to Timestamp.now(),
+                    "costoTotal" to OrdenManager.calcularTotal(),
+                    "bebida" to OrdenManager.obtenerBebida()?.nombre,
+                    "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado()
+                )
+
+                db.collection("ordenes").add(orden)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
+                        OrdenManager.limpiarOrden()
+                        val intent = Intent(this, TipoOrdenActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
+                    }
             }
 
-            builder.setNegativeButton("Cancelar") { dialog, which ->
-                // No hacer nada si el usuario cancela
-                dialog.dismiss()
-            }
-
-            val dialog = builder.create()
-            dialog.show()
+            builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            builder.create().show()
         }
 
         btnAgregar.setOnClickListener {
-            var intent: Intent = Intent(this, ProductosActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ProductosActivity::class.java))
         }
     }
 
     private inner class AdaptadorOrder(val contexto: Context, val productos: List<Producto>) : BaseAdapter() {
-        override fun getCount(): Int {
-            return productos.size
-        }
+        override fun getCount(): Int = productos.size
 
-        override fun getItem(position: Int): Any {
-            return productos[position]
-        }
+        override fun getItem(position: Int): Any = productos[position]
 
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
+        override fun getItemId(position: Int): Long = position.toLong()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val prod = productos[position]
             val inflador = LayoutInflater.from(contexto)
-
             val vista = inflador.inflate(R.layout.item_producto, null)
 
             val nombre = vista.findViewById<TextView>(R.id.itemNombre)
@@ -98,7 +102,7 @@ class OrdenActual : AppCompatActivity() {
             val btnMenos = vista.findViewById<Button>(R.id.btnMenos)
 
             nombre.text = prod.nombre
-            precio.text = "Total: $${prod.precio * prod.cantidad}"
+            precio.text = "Total: $${prod.costo * prod.cantidad}"
             imagen.setImageResource(prod.imagen)
             txtCantidad.text = prod.cantidad.toString()
 
@@ -118,11 +122,10 @@ class OrdenActual : AppCompatActivity() {
             btnMenos.setOnClickListener {
                 val mantenerProducto = OrdenManager.decrementarCantidad(position)
                 if (!mantenerProducto) {
-                    // Si el producto fue eliminado, actualizar el layout
                     notifyDataSetChanged()
                 } else {
                     txtCantidad.text = prod.cantidad.toString()
-                    precio.text = "Precio: $${prod.precio * prod.cantidad}"
+                    precio.text = "Precio: $${prod.costo * prod.cantidad}"
                 }
             }
 

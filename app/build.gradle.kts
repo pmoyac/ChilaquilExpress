@@ -53,6 +53,8 @@ dependencies {
     implementation("com.google.firebase:firebase-core:21.1.1")
         // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+
 
 
     testImplementation(libs.junit)

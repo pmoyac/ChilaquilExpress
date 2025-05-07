@@ -6,7 +6,7 @@ data class Producto(
     var imagen: Int,
     var nombre: String,
     var descripcion: String,
-    var precio: Double,
+    var costo: Int,
     var categoria: String,
     var cantidad: Int = 1,
     var toppings: List<String> = emptyList(),
