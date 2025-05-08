@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 
 class MenuChilaquil : AppCompatActivity() {
+    var boton: Int=0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        boton = intent.getIntExtra("boton", 0)
         setContentView(R.layout.activity_menu_chilaquil)
 
         val nombre = intent.getStringExtra("nombre") ?: ""
@@ -72,8 +74,8 @@ class MenuChilaquil : AppCompatActivity() {
             )
 
             OrdenManager.agregarProducto(producto)
-
             val intent = Intent(this, OrdenActual::class.java)
+            intent.putExtra("boton",boton)
             startActivity(intent)
         }
     }

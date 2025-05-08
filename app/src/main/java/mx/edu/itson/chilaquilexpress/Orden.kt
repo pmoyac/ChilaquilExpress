@@ -11,7 +11,8 @@ data class Orden(
     val chilaquiles: List<Chilaquil>,
     val bebidas: List<Bebida>,
     val fecha: String = obtenerFechaActual(),
-    var costoTotal: Int=0
+    var costoTotal: Int=0,
+    var pagado: Boolean = false
 ){
     fun calcularCostoTotal() {
         val costoBebidas = bebidas.sumOf { it.costo }

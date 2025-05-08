@@ -20,11 +20,18 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class OrdenActual : AppCompatActivity() {
+    var boton: Int =0
+    private lateinit var txtBoton: TextView
     private lateinit var adaptadorProductos: AdaptadorOrder
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_orden_actual)
+        boton = intent.getIntExtra("boton", 0)
+        txtBoton = findViewById(R.id.txtBoton)
+        txtBoton.setText("${txtBoton.text} $boton")
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

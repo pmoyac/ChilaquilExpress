@@ -24,12 +24,14 @@ class TipoOrdenActivity : AppCompatActivity() {
 
         buttonMesa.setOnClickListener(){
             var intent: Intent = Intent(this, ProductosActivity::class.java)
+            intent.putExtra("boton", 1)
             startActivity(intent)
 
         }
 
         buttonPersona.setOnClickListener(){
             var intent: Intent = Intent(this, ProductosActivity::class.java)
+            intent.putExtra("boton", 2)
             startActivity(intent)
 
         }

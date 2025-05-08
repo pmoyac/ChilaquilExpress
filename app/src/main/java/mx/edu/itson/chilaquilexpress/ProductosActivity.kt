@@ -22,10 +22,12 @@ class ProductosActivity : AppCompatActivity() {
     lateinit var listBebidas: ListView
     lateinit var adaptadorChilaquiles: AdaptadorProductos
     lateinit var adaptadorBebidas: AdaptadorProductos
+    var boton: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        boton = intent.getIntExtra("boton", 0)
         setContentView(R.layout.activity_productos)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -44,6 +46,7 @@ class ProductosActivity : AppCompatActivity() {
             val intent = Intent(this, MenuChilaquil::class.java)
             intent.putExtra("nombre", chilaquilSeleccionado.nombre)
             intent.putExtra("costo", chilaquilSeleccionado.costo)
+            intent.putExtra("boton",boton)
             startActivity(intent)
         }
 
@@ -58,6 +61,7 @@ class ProductosActivity : AppCompatActivity() {
                 cantidad = 1
             )
             OrdenManager.agregarProducto(producto)
+            intent.putExtra("boton",boton)
             startActivity(Intent(this, OrdenActual::class.java))
         }
     }
