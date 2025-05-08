@@ -65,6 +65,7 @@ class OrdenActual : AppCompatActivity() {
                         "bebida" to OrdenManager.obtenerBebida()?.nombre,
                         "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
                         "pagado" to false
+                        
                     )
 
                     db.collection("ordenes").add(orden)
