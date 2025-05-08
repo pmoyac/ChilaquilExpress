@@ -169,7 +169,7 @@ class OrdenActual : AppCompatActivity() {
         }
 
         btnCancelar.setOnClickListener {
-            var intent: Intent = Intent(this, ProductosActivity::class.java)
+            var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
             OrdenManager.limpiarOrden()
             startActivity(intent)
         }
