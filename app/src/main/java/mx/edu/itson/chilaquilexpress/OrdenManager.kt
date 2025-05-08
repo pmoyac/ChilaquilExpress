@@ -2,6 +2,12 @@ package mx.edu.itson.chilaquilexpress
 
 object OrdenManager {
     val productosEnOrden = mutableListOf<Producto>()
+    private val bebidas = mutableListOf<Bebida>()
+    private val chilaquiles = mutableListOf<Chilaquil>()
+
+    fun esOrdenValida(): Boolean {
+        return bebidas.isNotEmpty() || chilaquiles.isNotEmpty()
+    }
 
     // Agregar un producto a la orden
     fun agregarProducto(producto: Producto) {

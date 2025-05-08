@@ -53,6 +53,11 @@ class OrdenActual : AppCompatActivity() {
         when (boton){
             1 ->{
                 btnFinalizar.setOnClickListener {
+                    if (!OrdenManager.esOrdenValida()) {
+                        Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle("Confirmar orden")
                     builder.setMessage("¿Quieres hacer otra orden?")
@@ -121,6 +126,11 @@ class OrdenActual : AppCompatActivity() {
             }
             2 ->{
                 btnFinalizar.setOnClickListener {
+                    if (!OrdenManager.esOrdenValida()) {
+                        Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle("Confirmar orden")
                     builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
