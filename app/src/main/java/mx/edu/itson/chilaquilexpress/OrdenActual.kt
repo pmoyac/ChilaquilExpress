@@ -20,7 +20,8 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class OrdenActual : AppCompatActivity() {
-    var boton: Int =0
+    private var boton: Int =0
+    private var identificador: String = ""
     private lateinit var txtBoton: TextView
     private lateinit var adaptadorProductos: AdaptadorOrder
 
@@ -29,6 +30,7 @@ class OrdenActual : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_orden_actual)
         boton = intent.getIntExtra("boton", 0)
+        identificador = intent.getStringExtra("identificador") ?: ""
         txtBoton = findViewById(R.id.txtBoton)
         txtBoton.setText("${txtBoton.text} $boton")
 
@@ -47,126 +49,121 @@ class OrdenActual : AppCompatActivity() {
         val btnFinalizar: Button = findViewById(R.id.btnFinalizar)
         val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
 
-        if(boton == 1){
-            btnFinalizar.setOnClickListener {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Confirmar orden")
-                builder.setMessage("¿Quieres hacer otra orden?")
+        when (boton){
+            1 ->{
+                btnFinalizar.setOnClickListener {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Confirmar orden")
+                    builder.setMessage("¿Quieres hacer otra orden?")
 
-                builder.setPositiveButton("Sí") { dialog, which ->
-                    val db = FirebaseFirestore.getInstance()
+                    builder.setPositiveButton("Sí") { dialog, which ->
+                        val db = FirebaseFirestore.getInstance()
 
-                    val orden = hashMapOf(
-                        "id" to System.currentTimeMillis().toString(),
-                        "tipo" to "persona", // o "mesa", según tu lógica
-                        "identificador" to "mesa_1", // puedes cambiarlo dinámicamente
-                        "fecha" to Timestamp.now(),
-                        "costoTotal" to OrdenManager.calcularTotal(),
-                        "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                        "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
-                        "pagado" to false
-                        
-                    )
+                        val orden = hashMapOf(
+                            "id" to System.currentTimeMillis().toString(),
+                            "tipo" to TipoOrden.MESA, // o "mesa", según tu lógica
+                            "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
+                            "fecha" to Timestamp.now(),
+                            "costoTotal" to OrdenManager.calcularTotal(),
+                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "pagado" to false
 
-                    db.collection("ordenes").add(orden)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                            OrdenManager.limpiarOrden()
-                            val intent = Intent(this, TipoOrdenActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                        }
-                    OrdenManager.limpiarOrden()
-                    var intent: Intent = Intent(this, OrdenActual::class.java)
-                    intent.putExtra("boton", boton)
-                    startActivity(intent)
+                        )
 
+                        db.collection("ordenes").add(orden)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
+                                OrdenManager.limpiarOrden()
+                                var intent: Intent = Intent(this, OrdenActual::class.java)
+                                intent.putExtra("boton", boton)
+                                intent.putExtra("identificador", identificador)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
+                            }
+
+                    }
+
+                    builder.setNegativeButton("No") { dialog, which ->
+                        val db = FirebaseFirestore.getInstance()
+
+                        val orden = hashMapOf(
+                            "id" to System.currentTimeMillis().toString(),
+                            "tipo" to TipoOrden.MESA, // o "mesa", según tu lógica
+                            "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
+                            "fecha" to Timestamp.now(),
+                            "costoTotal" to OrdenManager.calcularTotal(),
+                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "pagado" to false
+                        )
+
+                        db.collection("ordenes").add(orden)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
+                                OrdenManager.limpiarOrden()
+                                val intent = Intent(this, TipoOrdenActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+
+                    builder.setNeutralButton("Cancelar") { dialog, _ -> dialog.dismiss()}
+                    builder.create().show()
                 }
-
-                builder.setNegativeButton("No") { dialog, which ->
-                    val db = FirebaseFirestore.getInstance()
-
-                    val orden = hashMapOf(
-                        "id" to System.currentTimeMillis().toString(),
-                        "tipo" to "persona", // o "mesa", según tu lógica
-                        "identificador" to "mesa_1", // puedes cambiarlo dinámicamente
-                        "fecha" to Timestamp.now(),
-                        "costoTotal" to OrdenManager.calcularTotal(),
-                        "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                        "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
-                        "pagado" to false
-                    )
-
-                    db.collection("ordenes").add(orden)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                            OrdenManager.limpiarOrden()
-                            val intent = Intent(this, TipoOrdenActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                        }
-                    OrdenManager.limpiarOrden()
-                    var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
-                    startActivity(intent)
-                }
-
-                builder.setNeutralButton("Cancelar") { dialog, _ -> dialog.dismiss()}
-                builder.create().show()
             }
-        }
+            2 ->{
+                btnFinalizar.setOnClickListener {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Confirmar orden")
+                    builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
 
-        if(boton ==2){
-            btnFinalizar.setOnClickListener {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Confirmar orden")
-                builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
+                    builder.setPositiveButton("Sí") { dialog, which ->
+                        val db = FirebaseFirestore.getInstance()
 
-                builder.setPositiveButton("Sí") { dialog, which ->
-                    val db = FirebaseFirestore.getInstance()
+                        val orden = hashMapOf(
+                            "id" to System.currentTimeMillis().toString(),
+                            "tipo" to TipoOrden.PERSONA, // o "mesa", según tu lógica
+                            "identificador" to identificador, // puedes cambiarlo dinámicamente
+                            "fecha" to Timestamp.now(),
+                            "costoTotal" to OrdenManager.calcularTotal(),
+                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "pagado" to false
+                        )
 
-                    val orden = hashMapOf(
-                        "id" to System.currentTimeMillis().toString(),
-                        "tipo" to "persona", // o "mesa", según tu lógica
-                        "identificador" to "mesa_1", // puedes cambiarlo dinámicamente
-                        "fecha" to Timestamp.now(),
-                        "costoTotal" to OrdenManager.calcularTotal(),
-                        "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                        "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
-                        "pagado" to false
-                    )
+                        db.collection("ordenes").add(orden)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
+                                OrdenManager.limpiarOrden()
+                                val intent = Intent(this, TipoOrdenActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
+                            }
+                    }
 
-                    db.collection("ordenes").add(orden)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                            OrdenManager.limpiarOrden()
-                            val intent = Intent(this, TipoOrdenActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                        }
-                    OrdenManager.limpiarOrden()
-                    var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
-                    startActivity(intent)
+                    builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                    builder.create().show()
+
                 }
-
-                builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-                builder.create().show()
-
             }
 
+            null -> TODO()
         }
 
         btnAgregar.setOnClickListener {
             var intent: Intent = Intent(this, ProductosActivity::class.java)
             intent.putExtra("boton", boton)
+            intent.putExtra("identificador", identificador)
             startActivity(intent)
         }
 
