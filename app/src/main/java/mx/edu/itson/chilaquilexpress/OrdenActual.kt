@@ -48,6 +48,7 @@ class OrdenActual : AppCompatActivity() {
 
         val btnFinalizar: Button = findViewById(R.id.btnFinalizar)
         val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
+        val btnCancelar: Button = findViewById(R.id.btnCancelar)
 
         when (boton){
             1 ->{
@@ -167,6 +168,11 @@ class OrdenActual : AppCompatActivity() {
             startActivity(intent)
         }
 
+        btnCancelar.setOnClickListener {
+            var intent: Intent = Intent(this, ProductosActivity::class.java)
+            OrdenManager.limpiarOrden()
+            startActivity(intent)
+        }
 
     }
 
