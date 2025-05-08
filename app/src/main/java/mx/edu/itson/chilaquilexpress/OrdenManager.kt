@@ -51,22 +51,26 @@ object OrdenManager {
         productosEnOrden.clear()
     }
 
-    // Obtener la bebida actual
-    fun obtenerBebida(): Producto? {
-        return productosEnOrden.find { it.categoria == "Bebidas" }
+    // Obtener todas las bebidas
+    fun obtenerBebidas(): List<Producto> {
+        return productosEnOrden.filter { it.categoria.equals("Bebidas", ignoreCase = true) }
     }
 
-    // Obtener los datos del chilaquil en formato compatible con Firestore
-    fun obtenerChilaquilesMapeado(): Map<String, Any> {
-        val chilaquil = productosEnOrden.find { it.categoria == "Chilaquiles" } ?: return emptyMap()
+    // Obtener todos los chilaquiles
+    private fun obtenerChilaquiles(): List<Producto> {
+        return productosEnOrden.filter { it.categoria.equals("Chilaquiles", ignoreCase = true) }
+    }
 
-        return mapOf(
-            "tipo" to if (chilaquil.nombre.contains("Verde", ignoreCase = true)) "verde" else "rojo",
-            "proteinas" to chilaquil.proteinas,
-            "toppings" to chilaquil.toppings,
-            "precioBase" to chilaquil.costo,
-            "costoTotal" to chilaquil.costo * chilaquil.cantidad
-        )
+    fun obtenerChilaquilesMapeados(): List<Map<String, Any>> {
+        return obtenerChilaquiles().map { chilaquil ->
+            mapOf(
+                "tipo" to if (chilaquil.nombre.contains("Verde", ignoreCase = true)) "verde" else "rojo",
+                "proteinas" to chilaquil.proteinas,
+                "toppings" to chilaquil.toppings,
+                "precioBase" to chilaquil.costo,
+                "costoTotal" to chilaquil.costo * chilaquil.cantidad
+            )
+        }
     }
 
     // Calcular el total de la orden

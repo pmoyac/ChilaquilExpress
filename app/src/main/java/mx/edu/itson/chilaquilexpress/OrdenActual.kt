@@ -65,8 +65,8 @@ class OrdenActual : AppCompatActivity() {
                             "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
                             "fecha" to Timestamp.now(),
                             "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "bebida" to OrdenManager.obtenerBebidas(),
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
                             "pagado" to false
 
                         )
@@ -96,8 +96,8 @@ class OrdenActual : AppCompatActivity() {
                             "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
                             "fecha" to Timestamp.now(),
                             "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "bebida" to OrdenManager.obtenerBebidas(),
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
                             "pagado" to false
                         )
 
@@ -133,8 +133,8 @@ class OrdenActual : AppCompatActivity() {
                             "identificador" to identificador, // puedes cambiarlo dinámicamente
                             "fecha" to Timestamp.now(),
                             "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebida()?.nombre,
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeado(),
+                            "bebida" to OrdenManager.obtenerBebidas(),
+                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
                             "pagado" to false
                         )
 
