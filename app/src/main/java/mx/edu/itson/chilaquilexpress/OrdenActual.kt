@@ -173,7 +173,6 @@ class OrdenActual : AppCompatActivity() {
             OrdenManager.limpiarOrden()
             startActivity(intent)
         }
-
     }
 
     private inner class AdaptadorOrder(val contexto: Context, val productos: List<Producto>) : BaseAdapter() {
