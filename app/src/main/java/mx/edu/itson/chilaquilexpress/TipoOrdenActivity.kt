@@ -3,6 +3,7 @@ package mx.edu.itson.chilaquilexpress
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -72,6 +73,7 @@ class TipoOrdenActivity : AppCompatActivity() {
     fun mostrarDialogoMesa(context: Context, onMesaIngresada: (String) -> Unit) {
         val editText = EditText(context)
         editText.hint = "Ingresa la mesa"
+        editText.inputType = InputType.TYPE_CLASS_NUMBER
 
         AlertDialog.Builder(context)
             .setTitle("Mesa de los comensales:")
