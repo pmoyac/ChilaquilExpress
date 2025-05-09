@@ -1,203 +1,36 @@
 package mx.edu.itson.chilaquilexpress
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class OrdenActual : AppCompatActivity() {
-    private var boton: Int =0
+
+    private var boton: Int = 0
     private var identificador: String = ""
     private lateinit var txtBoton: TextView
-    private lateinit var adaptadorProductos: AdaptadorOrder
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_orden_actual)
+
         boton = intent.getIntExtra("boton", 0)
         identificador = intent.getStringExtra("identificador") ?: ""
-        txtBoton = findViewById(R.id.txtBoton)
-        txtBoton.setText("${txtBoton.text} $boton")
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        txtBoton = findViewById(R.id.txtBoton)
+        txtBoton.text = "${txtBoton.text} $boton"
 
         val productos = OrdenManager.productosEnOrden
+        val layoutLista = findViewById<LinearLayout>(R.id.listaDinamica)
+        layoutLista.removeAllViews()
 
-        val listProductos: ListView = findViewById(R.id.listProductos)
-        adaptadorProductos = AdaptadorOrder(this, productos)
-        listProductos.adapter = adaptadorProductos
-
-        val btnFinalizar: Button = findViewById(R.id.btnFinalizar)
-        val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
-        val btnCancelar: Button = findViewById(R.id.btnCancelar)
-
-        when (boton){
-            1 ->{
-                btnFinalizar.setOnClickListener {
-                    if (!OrdenManager.esOrdenValida()) {
-                        Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("Confirmar orden")
-                    builder.setMessage("¿Quieres hacer otra orden?")
-
-                    builder.setPositiveButton("Sí") { dialog, which ->
-                        val db = FirebaseFirestore.getInstance()
-
-                        val orden = hashMapOf(
-                            "id" to System.currentTimeMillis().toString(),
-                            "tipo" to TipoOrden.MESA, // o "mesa", según tu lógica
-                            "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
-                            "fecha" to Timestamp.now(),
-                            "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebidas(),
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
-                            "pagado" to false
-
-                        )
-
-                        db.collection("ordenes").add(orden)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                                OrdenManager.limpiarOrden()
-                                var intent: Intent = Intent(this, OrdenActual::class.java)
-                                intent.putExtra("boton", boton)
-                                intent.putExtra("identificador", identificador)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                            }
-
-                    }
-
-                    builder.setNegativeButton("No") { dialog, which ->
-                        val db = FirebaseFirestore.getInstance()
-
-                        val orden = hashMapOf(
-                            "id" to System.currentTimeMillis().toString(),
-                            "tipo" to TipoOrden.MESA, // o "mesa", según tu lógica
-                            "identificador" to "Mesa #$identificador", // puedes cambiarlo dinámicamente
-                            "fecha" to Timestamp.now(),
-                            "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebidas(),
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
-                            "pagado" to false
-                        )
-
-                        db.collection("ordenes").add(orden)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                                OrdenManager.limpiarOrden()
-                                val intent = Intent(this, TipoOrdenActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                            }
-                    }
-
-                    builder.setNeutralButton("Cancelar") { dialog, _ -> dialog.dismiss()}
-                    builder.create().show()
-                }
-            }
-            2 ->{
-                btnFinalizar.setOnClickListener {
-                    if (!OrdenManager.esOrdenValida()) {
-                        Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("Confirmar orden")
-                    builder.setMessage("¿Estás seguro de que deseas finalizar la orden?")
-
-                    builder.setPositiveButton("Sí") { dialog, which ->
-                        val db = FirebaseFirestore.getInstance()
-
-                        val orden = hashMapOf(
-                            "id" to System.currentTimeMillis().toString(),
-                            "tipo" to TipoOrden.PERSONA, // o "mesa", según tu lógica
-                            "identificador" to identificador, // puedes cambiarlo dinámicamente
-                            "fecha" to Timestamp.now(),
-                            "costoTotal" to OrdenManager.calcularTotal(),
-                            "bebida" to OrdenManager.obtenerBebidas(),
-                            "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
-                            "pagado" to false
-                        )
-
-                        db.collection("ordenes").add(orden)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                                OrdenManager.limpiarOrden()
-                                val intent = Intent(this, TipoOrdenActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                            }
-                    }
-
-                    builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-                    builder.create().show()
-
-                }
-            }
-
-            null -> {
-
-            }
-        }
-
-        btnAgregar.setOnClickListener {
-            var intent: Intent = Intent(this, ProductosActivity::class.java)
-            intent.putExtra("boton", boton)
-            intent.putExtra("identificador", identificador)
-            startActivity(intent)
-        }
-
-        btnCancelar.setOnClickListener {
-            var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
-            OrdenManager.limpiarOrden()
-            startActivity(intent)
-        }
-    }
-
-    private inner class AdaptadorOrder(val contexto: Context, val productos: List<Producto>) : BaseAdapter() {
-        override fun getCount(): Int = productos.size
-
-        override fun getItem(position: Int): Any = productos[position]
-
-        override fun getItemId(position: Int): Long = position.toLong()
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            val prod = productos[position]
-            val inflador = LayoutInflater.from(contexto)
-            val vista = inflador.inflate(R.layout.item_producto, null)
+        for ((index, prod) in productos.withIndex()) {
+            val vista = layoutInflater.inflate(R.layout.item_producto, layoutLista, false)
 
             val nombre = vista.findViewById<TextView>(R.id.itemNombre)
             val precio = vista.findViewById<TextView>(R.id.itemPrecio)
@@ -221,21 +54,96 @@ class OrdenActual : AppCompatActivity() {
             }
 
             btnMas.setOnClickListener {
-                OrdenManager.incrementarCantidad(position)
-                notifyDataSetChanged()
+                OrdenManager.incrementarCantidad(index)
+                txtCantidad.text = OrdenManager.productosEnOrden[index].cantidad.toString()
+                precio.text = "Total: $${prod.costo * OrdenManager.productosEnOrden[index].cantidad}"
+                actualizarTotales()
             }
 
             btnMenos.setOnClickListener {
-                val mantenerProducto = OrdenManager.decrementarCantidad(position)
-                if (!mantenerProducto) {
-                    notifyDataSetChanged()
+                val mantener = OrdenManager.decrementarCantidad(index)
+                if (mantener) {
+                    txtCantidad.text = OrdenManager.productosEnOrden[index].cantidad.toString()
+                    precio.text = "Total: $${prod.costo * OrdenManager.productosEnOrden[index].cantidad}"
                 } else {
-                    txtCantidad.text = prod.cantidad.toString()
-                    precio.text = "Precio: $${prod.costo * prod.cantidad}"
+                    layoutLista.removeView(vista)
                 }
+                actualizarTotales()
             }
 
-            return vista
+            layoutLista.addView(vista)
         }
+
+        actualizarTotales()
+
+        val btnFinalizar = findViewById<Button>(R.id.btnFinalizar)
+        val btnAgregar = findViewById<Button>(R.id.btnAgregarProducto)
+        val btnCancelar = findViewById<Button>(R.id.btnCancelar)
+
+        btnFinalizar.setOnClickListener {
+            if (!OrdenManager.esOrdenValida()) {
+                Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Confirmar orden")
+            builder.setMessage("¿Deseas finalizar la orden?")
+
+            builder.setPositiveButton("Sí") { _, _ ->
+                val db = FirebaseFirestore.getInstance()
+                val tipoOrden = if (boton == 1) TipoOrden.MESA else TipoOrden.PERSONA
+                val id = System.currentTimeMillis().toString()
+                val orden = hashMapOf(
+                    "id" to id,
+                    "tipo" to tipoOrden,
+                    "identificador" to if (tipoOrden == TipoOrden.MESA) "Mesa #$identificador" else identificador,
+                    "fecha" to Timestamp.now(),
+                    "costoTotal" to OrdenManager.calcularTotal(),
+                    "bebida" to OrdenManager.obtenerBebidas(),
+                    "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
+                    "pagado" to false
+                )
+
+                db.collection("ordenes").add(orden)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
+                        OrdenManager.limpiarOrden()
+                        val intent = Intent(this, TipoOrdenActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            builder.create().show()
+        }
+
+        btnAgregar.setOnClickListener {
+            val intent = Intent(this, ProductosActivity::class.java)
+            intent.putExtra("boton", boton)
+            intent.putExtra("identificador", identificador)
+            startActivity(intent)
+        }
+
+        btnCancelar.setOnClickListener {
+            OrdenManager.limpiarOrden()
+            val intent = Intent(this, TipoOrdenActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    fun actualizarTotales() {
+        val txtTotal = findViewById<TextView>(R.id.txtTotal)
+        val txtTotalIva = findViewById<TextView>(R.id.txtTotalIva)
+
+        val total = OrdenManager.calcularTotal().toDouble()
+        val totalIva = total * 1.16
+
+        txtTotal.text = "Sub total: $${"%.2f".format(total)}"
+        txtTotalIva.text = "Total con IVA (16%): $${"%.2f".format(totalIva)}"
     }
 }

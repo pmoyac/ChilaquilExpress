@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".OrdenActual">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/white"
-        >
+        android:background="@color/white">
+
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerInside"
-            android:src="@drawable/logo"
-            />
+            android:src="@drawable/logo" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,103 +29,115 @@
             android:fontFamily="monospace"
             android:textAllCaps="true"
             android:textColor="@color/rojo"
-            android:textSize="37sp"
+            android:textSize="32sp"
             android:textStyle="bold"
-            android:layout_gravity="center"
-            />
-
+            android:gravity="center_vertical"
+            android:paddingStart="8dp" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/txtBoton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Vengo de boton: "
-
-        />
+        android:text="Vengo de botón:"
+        android:padding="8dp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/rojo"
-        android:textColor="@color/rojo"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="5dp"
-        />
+        android:background="@color/rojo" />
 
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white"
-
-        >
-        <ListView
-            android:id="@+id/listProductos"
-            android:layout_width="match_parent"
-            android:layout_height="620dp"
-            />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/rojo"
-            android:textColor="@color/rojo"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="5dp"
-            />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="15dp"
-            android:paddingHorizontal="10dp"
-            android:gravity="center">
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
 
-            <Button
-                android:id="@+id/btnAgregarProducto"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="AGREGAR PRODUCTO"
-                android:fontFamily="monospace"
-                android:textAllCaps="true"
-                android:textStyle="bold"
-                android:background="@drawable/round_button"
-                android:textSize="14sp"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="4dp"
-                android:layout_marginEnd="4dp"/>
 
-            <Button
-                android:id="@+id/btnCancelar"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/listaDinamica"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="CANCELAR ORDEN"
-                android:fontFamily="monospace"
-                android:textAllCaps="true"
-                android:textStyle="bold"
-                android:background="@drawable/round_button"
-                android:textSize="14sp"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="4dp"
-                android:layout_marginEnd="4dp"/>
+                android:orientation="vertical"
+                android:divider="@android:color/darker_gray"
+                android:showDividers="middle" />
 
-            <Button
-                android:id="@+id/btnFinalizar"
-                android:layout_width="0dp"
+
+
+            <TextView
+                android:id="@+id/txtTotal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="FINALIZAR ORDEN"
-                android:fontFamily="monospace"
-                android:textAllCaps="true"
+                android:padding="12dp"
+                android:text="Sub total: $0.00"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:background="@drawable/round_button"
-                android:textSize="14sp"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="4dp"/>
+                android:textColor="@color/black"
+                android:background="#eeeeee" />
+
+            <TextView
+                android:id="@+id/txtTotalIva"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="Total: $0.00"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/rojo"
+                android:background="#eeeeee" />
+
         </LinearLayout>
+    </ScrollView>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp"
+        android:background="#f5f5f5">
+
+        <Button
+            android:id="@+id/btnAgregarProducto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AGREGAR PRODUCTO"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:background="@drawable/round_button"
+            android:textSize="14sp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CANCELAR ORDEN"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:background="@drawable/round_button"
+            android:textSize="14sp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnFinalizar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FINALIZAR ORDEN"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:background="@drawable/round_button"
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
