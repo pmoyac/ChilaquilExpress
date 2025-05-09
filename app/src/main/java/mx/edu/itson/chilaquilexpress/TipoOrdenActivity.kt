@@ -24,6 +24,7 @@ class TipoOrdenActivity : AppCompatActivity() {
 
         val buttonMesa: Button = findViewById(R.id.btn_por_mesa)
         val buttonPersona: Button = findViewById(R.id.btn_por_persona)
+        val btnOrdenes: Button = findViewById(R.id.btn_Ver_Ordenes)
 
         buttonMesa.setOnClickListener(){
             mostrarDialogoMesa(this){ mesa ->
@@ -42,6 +43,11 @@ class TipoOrdenActivity : AppCompatActivity() {
                 intent.putExtra("identificador", nombre)
                 startActivity(intent)
             }
+        }
+
+        btnOrdenes.setOnClickListener(){
+            var intent: Intent = Intent(this, VerOrdenes::class.java)
+            startActivity(intent)
         }
     }
 

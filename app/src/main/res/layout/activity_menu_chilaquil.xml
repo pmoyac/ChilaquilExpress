@@ -38,6 +38,8 @@
             android:id="@+id/cbFrijoles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/frijoles"
             />
@@ -46,6 +48,8 @@
             android:id="@+id/cbPollo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/pollo"/>
 
@@ -54,6 +58,8 @@
             android:id="@+id/cbChorizo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/chorizo"/>
 
@@ -61,6 +67,8 @@
             android:id="@+id/cbChilorio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/chilorio"/>
 
@@ -68,6 +76,8 @@
             android:id="@+id/cbCochinita"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/cochinita"/>
 
@@ -75,6 +85,8 @@
             android:id="@+id/cbChicharron"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:text="@string/chicharron"/>
 
@@ -96,6 +108,8 @@
             android:id="@+id/cbCrema"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="@string/crema"/>
@@ -104,6 +118,8 @@
             android:id="@+id/cbQueso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="@string/queso_fresco"/>
@@ -112,6 +128,8 @@
             android:id="@+id/cbCilantro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="@string/cilantro"/>
@@ -120,6 +138,8 @@
             android:id="@+id/cbCebolla"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="@string/cebolla"/>
