@@ -43,45 +43,72 @@ class VerOrdenes : AppCompatActivity() {
         adaptadorOrdenes = AdaptadorOrdenes(this, ArrayList())
         listOrdenes.adapter = adaptadorOrdenes
 
-        var fireService: FirebaseService = FirebaseService()
         val db = FirebaseFirestore.getInstance()
-       // var ordenesFirestore = fireService.obtenerOrdenesNoPagadas()
-       var ordenesFirebase = db.collection("ordenes")
-            .whereEqualTo("pagado", false).get().addOnSuccessListener { result ->
-            val resultado = result.documents.mapNotNull { doc ->
-                val id = doc.getString("id") ?: return@mapNotNull null
-                val identificador = doc.getString("identificador") ?: return@mapNotNull null
-                val tipoBd = doc.getString("tipo") ?: return@mapNotNull null
-                val chilaquiles = doc.toObject<Orden>()?.chilaquiles ?: emptyList()
-                val bebidas = doc.toObject<Orden>()?.bebidas ?: emptyList()
-                val costoTotal = (doc.get("costoTotal") as? Number)?.toFloat() ?: 0f
-                val pagado = doc.getBoolean("pagado")?: return@mapNotNull null
-                val fecha = doc.getString("fecha")?: return@mapNotNull null
+        db.collection("ordenes")
+            .whereEqualTo("pagado", false)
+            .get()
+            .addOnSuccessListener { result ->
+                val resultado = result.documents.mapNotNull { doc ->
+                    try {
+                        val id = doc.getString("id") ?: return@mapNotNull null
+                        val identificador = doc.getString("identificador") ?: return@mapNotNull null
+                        val tipoString = doc.getString("tipo") ?: return@mapNotNull null
+                        val tipo = when (tipoString) {
+                            "MESA" -> TipoOrden.MESA
+                            "PERSONA" -> TipoOrden.PERSONA
+                            else -> TipoOrden.PERSONA
+                        }
+                        val fecha = (doc.get("fecha") as? com.google.firebase.Timestamp)?.toDate()?.toString() ?: "Sin fecha"
+                        val costoTotal = (doc.get("costoTotal") as? Number)?.toFloat() ?: 0f
+                        val pagado = doc.getBoolean("pagado") ?: false
 
-                var tipo: TipoOrden = when(tipoBd){
-                    "MESA" ->{ TipoOrden.MESA }
-                    "PERSONA" ->{ TipoOrden.PERSONA }
-                    else -> throw IllegalArgumentException("TipoOrden desconocido: $tipoBd")
+                        val chilaquilesRaw = doc.get("chilaquiles") as? List<Map<String, Any>> ?: emptyList()
+                        val chilaquiles = chilaquilesRaw.mapNotNull { ch ->
+                            try {
+                                val tipoSalsa = when (ch["tipo"] as? String) {
+                                    "verde" -> TipoSalsa.VERDE
+                                    "rojo" -> TipoSalsa.ROJA
+                                    else -> TipoSalsa.VERDE
+                                }
+                                val proteinas = (ch["proteinas"] as? List<Long>)?.map { it.toInt() } ?: emptyList()
+                                val toppings = (ch["toppings"] as? List<Long>)?.map { it.toInt() } ?: emptyList()
+                                val precioBase = (ch["precioBase"] as? Number)?.toInt() ?: 0
+                                val costoChilaquil = (ch["costoTotal"] as? Number)?.toInt() ?: 0
+
+                                Chilaquil(0, tipoSalsa, precioBase, proteinas, toppings, costoChilaquil)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+
+                        val bebidasRaw = doc.get("bebida") as? List<Map<String, Any>> ?: emptyList()
+                        val bebidas = bebidasRaw.mapNotNull { b ->
+                            try {
+                                val bid = b["id"] as? String ?: return@mapNotNull null
+                                val nombre = b["nombre"] as? String ?: return@mapNotNull null
+                                val costo = (b["costo"] as? Number)?.toInt() ?: return@mapNotNull null
+                                Bebida(id = bid, nombre = nombre, costo = costo)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+
+                        Orden(id, identificador, tipo, chilaquiles, bebidas, fecha, costoTotal, pagado)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        null
+                    }
                 }
 
-                Orden(
-                    id = id,
-                    identificador = identificador,
-                    tipo = tipo,
-                    chilaquiles = chilaquiles,
-                    bebidas = bebidas,
-                    fecha = fecha,
-                    costoTotal = costoTotal,
-                    pagado = pagado
-                )
+                adaptadorOrdenes.ordenes.clear()
+                adaptadorOrdenes.ordenes.addAll(resultado)
+                adaptadorOrdenes.notifyDataSetChanged()
             }
-
-            // Actualizar datos del adaptador
-            adaptadorOrdenes.ordenes.clear()
-            adaptadorOrdenes.ordenes.addAll(resultado)
-            adaptadorOrdenes.notifyDataSetChanged()
-        }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+            }
     }
+
     }
 
     class AdaptadorOrdenes(
