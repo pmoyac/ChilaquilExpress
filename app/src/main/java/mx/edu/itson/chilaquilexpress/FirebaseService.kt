@@ -51,6 +51,36 @@ class FirebaseService {
         }
     }
 
+    suspend fun obtenerOrdenesNoPagadas(): List<Orden> {
+        return try {
+            val snapshot = db.collection("ordenes")
+                .whereEqualTo("pagado", false)
+                .get()
+                .await()
+            snapshot.documents.mapNotNull { it.toObject<Orden>() }
+        } catch (e: Exception) {
+            Log.e("FirebaseService", "Error obteniendo órdenes no pagadas", e)
+            emptyList()
+        }
+    }
+
+    suspend fun obtenerOrdenesNoPagadasMesa(identificador: String): List<Orden> {
+        return try {
+            val snapshot = db.collection("ordenes")
+                .whereEqualTo("pagado", false)
+                .get()
+                .await()
+
+            snapshot.documents
+                .mapNotNull { it.toObject<Orden>() }
+                .filter { it.identificador.startsWith(identificador) }
+
+        } catch (e: Exception) {
+            Log.e("FirebaseService", "Error obteniendo órdenes no pagadas", e)
+            emptyList()
+        }
+    }
+
     suspend fun obtenerChilaquilesDeOrden(ordenId: String): List<Chilaquil> {
         return try {
             val snapshot = db.collection("ordenes").document(ordenId)

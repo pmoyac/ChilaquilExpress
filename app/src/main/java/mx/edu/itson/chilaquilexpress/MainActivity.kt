@@ -20,9 +20,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val button: Button = findViewById(R.id.btn_tomar_orden)
+        val btnOrdenes: Button = findViewById(R.id.btn_Ver_Ordenes)
 
         button.setOnClickListener(){
             var intent: Intent = Intent(this, TipoOrdenActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnOrdenes.setOnClickListener(){
+            var intent: Intent = Intent(this, VerOrdenes::class.java)
             startActivity(intent)
         }
     }

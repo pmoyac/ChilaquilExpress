@@ -53,7 +53,7 @@ class OrdenActual : AppCompatActivity() {
         when (boton){
             1 ->{
                 btnFinalizar.setOnClickListener {
-                    if (OrdenManager.esOrdenValida()) {
+                    if (!OrdenManager.esOrdenValida()) {
                         Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
@@ -168,7 +168,9 @@ class OrdenActual : AppCompatActivity() {
                 }
             }
 
-            null -> TODO()
+            null -> {
+
+            }
         }
 
         btnAgregar.setOnClickListener {
