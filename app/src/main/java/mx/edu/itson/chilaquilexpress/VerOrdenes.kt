@@ -1,15 +1,22 @@
 package mx.edu.itson.chilaquilexpress
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -37,7 +44,73 @@ class VerOrdenes : AppCompatActivity() {
 
         cargarOrdenesDesdeFirestore()
 
+        listOrdenes.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val ordenSeleccionada = parent.getItemAtPosition(position) as Orden
+            if (ordenSeleccionada.identificador.contains("Mesa", ignoreCase = true)) {
+                // Aquí haces lo que necesitas si contiene "Mesa"
+                mostrarDialogoTipoPago(this) { tipoPago ->
+                    when (tipoPago) {
+                        "individual" -> {
+                            // Lógica para pago individual
+                            Toast.makeText(this, "Es una orden de mesa individual", Toast.LENGTH_SHORT).show()
+                        }
+                        "mesa_completa" -> {
+                            // Lógica para pago de mesa completa
+                            Toast.makeText(this, "Es una orden de mesa completa", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } else {
+                val intent: Intent = Intent(this, OrdenAPagar::class.java)
+                intent.putExtra("identificador", "individual")
+                intent.putExtra("boton", 3)
+                intent.putExtra("orden", ordenSeleccionada)
+                startActivity(intent)
+                Toast.makeText(this, "No es una orden de mesa", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
     }
+
+    private fun mostrarDialogoTipoPago(context: Context, onSeleccionado: (String) -> Unit) {
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 40, 50, 10)
+            gravity = Gravity.CENTER
+        }
+
+        val btnIndividual = Button(context).apply {
+            text = "Pago Individual"
+        }
+
+        val btnMesaCompleta = Button(context).apply {
+            text = "Pago Mesa Completa"
+        }
+
+        layout.addView(btnIndividual)
+        layout.addView(btnMesaCompleta)
+
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Selecciona tipo de pago")
+            .setView(layout)
+            .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
+            .create()
+
+        btnIndividual.setOnClickListener {
+            onSeleccionado("individual")
+            dialog.dismiss()
+        }
+
+        btnMesaCompleta.setOnClickListener {
+            onSeleccionado("mesa_completa")
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
 
     private fun cargarOrdenesDesdeFirestore() {
         adaptadorOrdenes = AdaptadorOrdenes(this, ArrayList())

@@ -3,28 +3,45 @@ package mx.edu.itson.chilaquilexpress
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AlertDialog
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestore
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
-class OrdenActual : AppCompatActivity() {
-
-    private var boton: Int = 0
+class OrdenAPagar : AppCompatActivity() {
     private var identificador: String = ""
+    private var boton: Int = 0
+    private var orden: Orden = Orden()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_orden_actual)
-
-        boton = intent.getIntExtra("boton", 0)
+        enableEdgeToEdge()
         identificador = intent.getStringExtra("identificador") ?: ""
-
+        boton = intent.getIntExtra("boton", 0)
+        orden = intent.getSerializableExtra("orden") as Orden
+        setContentView(R.layout.activity_orden_apagar)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         val productos = OrdenManager.productosEnOrden
         val layoutLista = findViewById<LinearLayout>(R.id.listaDinamica)
         layoutLista.removeAllViews()
+
+        val txtTotal = findViewById<TextView>(R.id.txtTotal)
+        val txtTotalIva = findViewById<TextView>(R.id.txtTotalIva)
+
+        val total = OrdenManager.calcularTotal().toDouble() + orden.costoTotal
+        val totalIva = total * 1.16
+
+        txtTotal.text = "Sub total: $${"%.2f".format(total)}"
+        txtTotalIva.text = "Total con IVA (16%): $${"%.2f".format(totalIva)}"
 
         for ((index, prod) in productos.withIndex()) {
             val vista = layoutInflater.inflate(R.layout.item_producto, layoutLista, false)
@@ -43,13 +60,14 @@ class OrdenActual : AppCompatActivity() {
             txtCantidad.text = prod.cantidad.toString()
 
             if (prod.categoria == "Chilaquiles") {
-                val proteinasTexto = if (prod.proteinas.isNotEmpty()) prod.proteinas.joinToString(", ") else "Ninguna"
-                val toppingsTexto = if (prod.toppings.isNotEmpty()) prod.toppings.joinToString(", ") else "Ninguno"
+                val proteinasTexto =
+                    if (prod.proteinas.isNotEmpty()) prod.proteinas.joinToString(", ") else "Ninguna"
+                val toppingsTexto =
+                    if (prod.toppings.isNotEmpty()) prod.toppings.joinToString(", ") else "Ninguno"
                 toppingsProteinas.text = "Proteínas: $proteinasTexto | Toppings: $toppingsTexto"
             } else {
                 toppingsProteinas.visibility = View.GONE
             }
-
             btnMas.setOnClickListener {
                 OrdenManager.incrementarCantidad(index)
                 txtCantidad.text = OrdenManager.productosEnOrden[index].cantidad.toString()
@@ -71,73 +89,30 @@ class OrdenActual : AppCompatActivity() {
             layoutLista.addView(vista)
         }
 
-        actualizarTotales()
 
-        val btnFinalizar = findViewById<Button>(R.id.btnFinalizar)
-        val btnAgregar = findViewById<Button>(R.id.btnAgregarProducto)
-        val btnCancelar = findViewById<Button>(R.id.btnCancelar)
-
-        btnFinalizar.setOnClickListener {
-            if (!OrdenManager.esOrdenValida()) {
-                Toast.makeText(this, "La orden no puede estar vacía", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Confirmar orden")
-            builder.setMessage("¿Deseas finalizar la orden?")
-
-            builder.setPositiveButton("Sí") { _, _ ->
-                val db = FirebaseFirestore.getInstance()
-                val tipoOrden = if (boton == 1) TipoOrden.MESA else TipoOrden.PERSONA
-                val id = System.currentTimeMillis().toString()
-                val orden = hashMapOf(
-                    "id" to id,
-                    "tipo" to tipoOrden,
-                    "identificador" to if (tipoOrden == TipoOrden.MESA) "Mesa #$identificador" else identificador,
-                    "fecha" to Timestamp.now(),
-                    "costoTotal" to OrdenManager.calcularTotal(),
-                    "bebida" to OrdenManager.obtenerBebidas(),
-                    "chilaquiles" to OrdenManager.obtenerChilaquilesMapeados(),
-                    "pagado" to false
-                )
-
-                db.collection("ordenes").add(orden)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Orden enviada correctamente", Toast.LENGTH_SHORT).show()
-                        OrdenManager.limpiarOrden()
-                        val intent = Intent(this, TipoOrdenActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Error al guardar orden", Toast.LENGTH_SHORT).show()
-                    }
-            }
-
-            builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-            builder.create().show()
-        }
+        val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
+        val btnPagar: Button = findViewById(R.id.btnPagar)
 
         btnAgregar.setOnClickListener {
             val intent = Intent(this, ProductosActivity::class.java)
-            intent.putExtra("boton", boton)
             intent.putExtra("identificador", identificador)
+            intent.putExtra("boton", boton)
+            intent.putExtra("orden", orden)
             startActivity(intent)
         }
 
-        btnCancelar.setOnClickListener {
+        btnPagar.setOnClickListener(){
             OrdenManager.limpiarOrden()
-            val intent = Intent(this, TipoOrdenActivity::class.java)
+            val intent: Intent = Intent(this, TipoOrdenActivity::class.java)
             startActivity(intent)
         }
-    }
 
-    private fun actualizarTotales() {
+    }
+    fun actualizarTotales() {
         val txtTotal = findViewById<TextView>(R.id.txtTotal)
         val txtTotalIva = findViewById<TextView>(R.id.txtTotalIva)
 
-        val total = OrdenManager.calcularTotal().toDouble()
+        val total = OrdenManager.calcularTotal().toDouble() + orden.costoTotal
         val totalIva = total * 1.16
 
         txtTotal.text = "Sub total: $${"%.2f".format(total)}"

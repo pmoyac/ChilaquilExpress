@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ChilaquilExpress"
         tools:targetApi="31">
         <activity
+            android:name=".OrdenAPagar"
+            android:exported="false" />
+        <activity
             android:name=".VerOrdenes"
             android:exported="false" />
         <activity

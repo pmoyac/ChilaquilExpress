@@ -56,36 +56,60 @@ class TipoOrdenActivity : AppCompatActivity() {
         val editText = EditText(context)
         editText.hint = "Ingresa el nombre"
 
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
             .setTitle("Nombre del comensal:")
             .setView(editText)
-            .setPositiveButton("Aceptar") { dialog, _ ->
-                val nombre = editText.text.toString()
-                onNombreIngresado(nombre)
-                dialog.dismiss()
+            .setPositiveButton("Aceptar", null) // No cerramos el diálogo automáticamente
+            .setNegativeButton("Cancelar") { dialogInterface, _ ->
+                dialogInterface.cancel()
             }
-            .setNegativeButton("Cancelar") { dialog, _ ->
-                dialog.cancel()
+            .create()
+
+        dialog.setOnShowListener {
+            val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            button.setOnClickListener {
+                val nombre = editText.text.toString().trim()
+                if (nombre.isEmpty()) {
+                    editText.error = "No puede estar vacío"
+                } else {
+                    onNombreIngresado(nombre)
+                    dialog.dismiss()
+                }
             }
-            .show()
+        }
+
+        dialog.show()
     }
+
 
     fun mostrarDialogoMesa(context: Context, onMesaIngresada: (String) -> Unit) {
         val editText = EditText(context)
         editText.hint = "Ingresa la mesa"
         editText.inputType = InputType.TYPE_CLASS_NUMBER
 
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
             .setTitle("Mesa de los comensales:")
             .setView(editText)
-            .setPositiveButton("Aceptar") { dialog, _ ->
-                val mesa = editText.text.toString()
-                onMesaIngresada(mesa)
-                dialog.dismiss()
+            .setPositiveButton("Aceptar", null)
+            .setNegativeButton("Cancelar") { dialogInterface, _ ->
+                dialogInterface.cancel()
             }
-            .setNegativeButton("Cancelar") { dialog, _ ->
-                dialog.cancel()
+            .create()
+
+        dialog.setOnShowListener {
+            val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            button.setOnClickListener {
+                val mesa = editText.text.toString().trim()
+                if (mesa.isEmpty()) {
+                    editText.error = "Ingresa un número de mesa válido"
+                } else {
+                    onMesaIngresada(mesa)
+                    dialog.dismiss()
+                }
             }
-            .show()
+        }
+
+        dialog.show()
     }
+
 }

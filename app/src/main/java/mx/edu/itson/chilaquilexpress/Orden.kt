@@ -1,5 +1,6 @@
 package mx.edu.itson.chilaquilexpress
 
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -13,7 +14,7 @@ data class Orden(
     val fecha: String = obtenerFechaActual(),
     var costoTotal: Float=0.0F,
     var pagado: Boolean = false
-){
+): Serializable{
     constructor() : this("", "", TipoOrden.PERSONA, emptyList(), emptyList(), "", 0.0F, false)
 
     fun calcularCostoTotal() {

@@ -1,5 +1,7 @@
 package mx.edu.itson.chilaquilexpress
 
+import java.io.Serializable
+
 data class Chilaquil(
     var id: Int,
     val tipoSalsa: TipoSalsa,
@@ -7,8 +9,9 @@ data class Chilaquil(
     val proteinas: List<Int>,
     val toppings: List<Int>,
     var costoTotal: Int
-){
+): Serializable{
     fun getNombre(): String = "Chilaquiles ${tipoSalsa.name.lowercase().capitalize()}"
+
 
     fun calcularCostoTotal(proteinaLista: List<Proteina>) {
         val costoProteinas = proteinas.mapNotNull { id ->
@@ -16,4 +19,6 @@ data class Chilaquil(
         }.sum()
         costoTotal = costo + costoProteinas
     }
+
+
 }

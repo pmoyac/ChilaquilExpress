@@ -22,14 +22,16 @@ class ProductosActivity : AppCompatActivity() {
     lateinit var listBebidas: ListView
     lateinit var adaptadorChilaquiles: AdaptadorProductos
     lateinit var adaptadorBebidas: AdaptadorProductos
-    var boton: Int = 0
-    var identificador: String = ""
+    private var boton: Int = 0
+    private var identificador: String = ""
+    private var orden: Orden = Orden()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         boton = intent.getIntExtra("boton", 0)
         identificador = intent.getStringExtra("identificador") ?: ""
+        if(boton == 3) orden = intent.getSerializableExtra("orden") as Orden
         setContentView(R.layout.activity_productos)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -50,6 +52,9 @@ class ProductosActivity : AppCompatActivity() {
             intent.putExtra("costo", chilaquilSeleccionado.costo)
             intent.putExtra("boton",boton)
             intent.putExtra("identificador", identificador)
+            if(boton == 3){
+                intent.putExtra("orden", orden)
+            }
             startActivity(intent)
         }
 
@@ -64,7 +69,15 @@ class ProductosActivity : AppCompatActivity() {
                 cantidad = 1
             )
             OrdenManager.agregarProducto(producto)
-            var intent: Intent = Intent(this, OrdenActual::class.java)
+            var intent: Intent
+            if (boton == 3){
+                intent = Intent(this, OrdenAPagar::class.java)
+                intent.putExtra("orden", orden)
+            }else{
+                intent= Intent(this, OrdenActual::class.java)
+            }
+
+
             intent.putExtra("boton",boton)
             intent.putExtra("identificador", identificador)
             startActivity(intent)
