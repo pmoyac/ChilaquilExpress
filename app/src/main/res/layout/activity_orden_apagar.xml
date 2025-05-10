@@ -64,17 +64,16 @@
                 android:showDividers="middle" />
 
 
-
             <TextView
                 android:id="@+id/txtTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:padding="12dp"
-                android:text="Sub total: $0.00"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:text="Subtotal: $0.00"
                 android:textColor="@color/black"
-                android:background="#eeeeee" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtTotalIva"
