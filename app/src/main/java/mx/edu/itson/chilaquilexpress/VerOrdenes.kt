@@ -45,8 +45,14 @@ class VerOrdenes : AppCompatActivity() {
         }
 
         listOrdenes = findViewById(R.id.listOrdenes)
+        val btnRegresar: Button = findViewById(R.id.btnRegresar)
 
         cargarOrdenesDesdeFirestore()
+
+        btnRegresar.setOnClickListener(){
+            val intent: Intent = Intent(this, TipoOrdenActivity::class.java)
+            startActivity(intent)
+        }
 
         listOrdenes.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val ordenSeleccionada = parent.getItemAtPosition(position) as Orden
