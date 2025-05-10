@@ -10,7 +10,7 @@ data class Orden(
     val identificador: String,
     val tipo: TipoOrden,
     val chilaquiles: List<Chilaquil>,
-    val bebidas: List<Bebida>,
+    val bebidas: List<Producto>,
     val fecha: String = obtenerFechaActual(),
     var costoTotal: Float=0.0F,
     var pagado: Boolean = false

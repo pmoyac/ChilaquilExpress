@@ -107,6 +107,66 @@ class OrdenAPagar : AppCompatActivity() {
         val btnPagar: Button = findViewById(R.id.btnPagar)
         val btnFinalizar: Button = findViewById(R.id.btnEditarOrden)
 
+        btnFinalizar.setOnClickListener(){
+            if(identificador == "completa"){
+                Toast.makeText(this, "Solo Puedes pagar la cuenta", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                if (OrdenManager.productosEnOrden.isEmpty()){
+                    Toast.makeText(this, "Agrega otro producto para esto", Toast.LENGTH_SHORT).show()
+                }else{
+                    val db = FirebaseFirestore.getInstance()
+                    var chilaNuevos = orden.chilaquiles + OrdenManager.obtenerChilaquilesMapeados()
+                    val bebidasMapeadas = OrdenManager.obtenerBebidas().map { bebida ->
+                        mapOf(
+                            "nombre" to bebida.nombre,
+                            "descripcion" to bebida.descripcion,
+                            "costo" to bebida.costo,
+                            "imagen" to bebida.imagen,
+                            "categoria" to bebida.categoria,
+                            "cantidad" to bebida.cantidad
+                        )
+                    }
+                    var bebidasNuevo = orden.bebidas + bebidasMapeadas
+
+                    db.collection("ordenes")
+                        .whereEqualTo("id", orden.id)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                val document = querySnapshot.documents[0]
+                                val ordenRef = document.reference
+
+                                ordenRef.update(
+                                    mapOf(
+                                        "bebida" to bebidasNuevo,
+                                        "chilaquiles" to chilaNuevos,
+                                        "costoTotal" to totalIva
+                                    )
+                                ).addOnSuccessListener {
+                                    Toast.makeText(this, "Orden actualizada con éxito", Toast.LENGTH_SHORT).show()
+                                    OrdenManager.limpiarOrden()
+                                    val intent = Intent(this, VerOrdenes::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                }.addOnFailureListener {
+                                    Toast.makeText(this, "Error al actualizar la orden", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            else {
+                                Toast.makeText(this, "Orden no encontrada", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error al buscar la orden", Toast.LENGTH_SHORT).show()
+                        }
+
+                }
+
+            }
+        }
+
         btnAgregar.setOnClickListener {
             if (identificador == "completa"){
                 Toast.makeText(this, "Solo se pueden agregar producto cuando es cuenta Individual de la mesa", Toast.LENGTH_SHORT).show()

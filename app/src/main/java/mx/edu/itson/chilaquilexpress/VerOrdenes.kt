@@ -140,15 +140,27 @@ class VerOrdenes : AppCompatActivity() {
                     }
 
                     // 5) Bebidas: lista de mapas → List<Bebida>
-                    val bRaw = doc.get("bebida") as? List<Map<String, Any>> ?: emptyList()
-                    val bebidas = bRaw.mapNotNull { m ->
-                        runCatching {
-                            Bebida(
-                                id     = m["id"]     as? String ?: return@runCatching null,
-                                nombre = m["nombre"] as? String ?: return@runCatching null,
-                                costo  = (m["costo"] as? Number)?.toInt() ?: return@runCatching null
+                    val bebidasRaw = doc.get("bebida") as? List<Map<String, Any>> ?: emptyList()
+                    val bebidas = bebidasRaw.mapNotNull { b ->
+                        try {
+                            val nombre = b["nombre"] as? String ?: return@mapNotNull null
+                            val descripcion = b["descripcion"] as? String ?: ""
+                            val categoria = b["categoria"] as? String ?: ""
+                            val costo = (b["costo"] as? Number)?.toInt() ?: 0
+                            val imagen = (b["imagen"] as? Number)?.toInt() ?: 0
+                            val cantidad = (b["cantidad"] as? Number)?.toInt() ?: 1
+
+                            Producto(
+                                nombre = nombre,
+                                descripcion = descripcion,
+                                categoria = categoria,
+                                costo = costo,
+                                imagen = imagen,
+                                cantidad = cantidad
                             )
-                        }.getOrNull()
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
 
                     // 6) Construir la Orden
@@ -256,10 +268,21 @@ class VerOrdenes : AppCompatActivity() {
                         val bebidasRaw = doc.get("bebida") as? List<Map<String, Any>> ?: emptyList()
                         val bebidas = bebidasRaw.mapNotNull { b ->
                             try {
-                                val bid = b["id"] as? String ?: return@mapNotNull null
                                 val nombre = b["nombre"] as? String ?: return@mapNotNull null
-                                val costo = (b["costo"] as? Number)?.toInt() ?: return@mapNotNull null
-                                Bebida(id = bid, nombre = nombre, costo = costo)
+                                val descripcion = b["descripcion"] as? String ?: ""
+                                val categoria = b["categoria"] as? String ?: ""
+                                val costo = (b["costo"] as? Number)?.toInt() ?: 0
+                                val imagen = (b["imagen"] as? Number)?.toInt() ?: 0
+                                val cantidad = (b["cantidad"] as? Number)?.toInt() ?: 1
+
+                                Producto(
+                                    nombre = nombre,
+                                    descripcion = descripcion,
+                                    categoria = categoria,
+                                    costo = costo,
+                                    imagen = imagen,
+                                    cantidad = cantidad
+                                )
                             } catch (e: Exception) {
                                 null
                             }
