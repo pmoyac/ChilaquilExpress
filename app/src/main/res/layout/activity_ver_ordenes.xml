@@ -25,20 +25,28 @@
     <ListView
         android:id="@+id/listOrdenes"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="680dp"/>
 
-    <Button
-        android:id="@+id/btnRegresar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="220dp"
-        android:backgroundTint="@color/rojo"
-        android:fontFamily="monospace"
-        android:padding="17dp"
-        android:text="Regresar"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:background="@color/white">
 
+        <Button
+            android:id="@+id/btnRegresar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/rojo"
+            android:fontFamily="monospace"
+            android:padding="17dp"
+            android:text="Regresar"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 </LinearLayout>
+

@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Orden Actual"
+            android:paddingTop="30dp"
             android:fontFamily="monospace"
             android:textAllCaps="true"
             android:textColor="@color/rojo"
@@ -61,8 +62,6 @@
                 android:orientation="vertical"
                 android:divider="@android:color/darker_gray"
                 android:showDividers="middle" />
-
-
 
             <TextView
                 android:id="@+id/txtTotal"
@@ -107,7 +106,7 @@
             android:textStyle="bold"
             android:textAllCaps="true"
             android:background="@drawable/round_button"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:layout_marginEnd="4dp" />
 
         <Button
@@ -119,7 +118,7 @@
             android:textStyle="bold"
             android:textAllCaps="true"
             android:background="@drawable/round_button"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:layout_marginEnd="4dp" />
 
         <Button
@@ -131,6 +130,6 @@
             android:textStyle="bold"
             android:textAllCaps="true"
             android:background="@drawable/round_button"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </LinearLayout>
 </LinearLayout>
