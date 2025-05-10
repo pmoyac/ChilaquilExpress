@@ -7,15 +7,18 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OrdenAPagar : AppCompatActivity() {
     private var identificador: String = ""
     private var boton: Int = 0
     private var orden: Orden = Orden()
+    private var ordenes: List<Orden> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,7 @@ class OrdenAPagar : AppCompatActivity() {
         identificador = intent.getStringExtra("identificador") ?: ""
         boton = intent.getIntExtra("boton", 0)
         orden = intent.getSerializableExtra("orden") as Orden
+        if(identificador == "completa") ordenes = intent.getSerializableExtra("ordenes") as List<Orden>
         setContentView(R.layout.activity_orden_apagar)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -37,9 +41,18 @@ class OrdenAPagar : AppCompatActivity() {
         val txtTotal = findViewById<TextView>(R.id.txtTotal)
         val txtTotalIva = findViewById<TextView>(R.id.txtTotalIva)
 
-        val total = OrdenManager.calcularTotal().toDouble() + orden.costoTotal
-        val totalIva = total * 1.16
+        var total: Double = 0.0
+        var totalIva: Double = 0.0
 
+        if (identificador == "completa"){
+            for (or in ordenes){
+                total += OrdenManager.calcularTotal().toDouble() + or.costoTotal
+            }
+        }
+        else{
+            total = OrdenManager.calcularTotal().toDouble() + orden.costoTotal
+        }
+        totalIva = total * 1.16
         txtTotal.text = "Sub total: $${"%.2f".format(total)}"
         txtTotalIva.text = "Total con IVA (16%): $${"%.2f".format(totalIva)}"
 
@@ -92,20 +105,93 @@ class OrdenAPagar : AppCompatActivity() {
 
         val btnAgregar: Button = findViewById(R.id.btnAgregarProducto)
         val btnPagar: Button = findViewById(R.id.btnPagar)
+        val btnFinalizar: Button = findViewById(R.id.btnEditarOrden)
 
         btnAgregar.setOnClickListener {
-            val intent = Intent(this, ProductosActivity::class.java)
-            intent.putExtra("identificador", identificador)
-            intent.putExtra("boton", boton)
-            intent.putExtra("orden", orden)
-            startActivity(intent)
+            if (identificador == "completa"){
+                Toast.makeText(this, "Solo se pueden agregar producto cuando es cuenta Individual de la mesa", Toast.LENGTH_SHORT).show()
+            }else{
+                val intent = Intent(this, ProductosActivity::class.java)
+                intent.putExtra("identificador", identificador)
+                intent.putExtra("boton", boton)
+                intent.putExtra("orden", orden)
+                startActivity(intent)
+            }
+
         }
 
-        btnPagar.setOnClickListener(){
-            OrdenManager.limpiarOrden()
-            val intent: Intent = Intent(this, TipoOrdenActivity::class.java)
-            startActivity(intent)
+        btnPagar.setOnClickListener {
+            if (identificador == "completa"){
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("ordenes")
+                    .whereEqualTo("identificador", orden.identificador)
+                    .whereEqualTo("pagado", false)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val batch = db.batch()
+
+                            for (document in querySnapshot.documents) {
+                                val docRef = db.collection("ordenes").document(document.id)
+                                batch.update(docRef, "pagado", true)
+                            }
+
+                            batch.commit()
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Órdenes marcadas como pagadas", Toast.LENGTH_SHORT).show()
+
+                                    OrdenManager.limpiarOrden()
+                                    val intent = Intent(this, TipoOrdenActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Error al actualizar las órdenes", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Toast.makeText(this, "No se encontraron órdenes pendientes", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al buscar las órdenes", Toast.LENGTH_SHORT).show()
+                    }
+
+            }else{
+                val db = FirebaseFirestore.getInstance()
+                val idOrden = orden.id
+
+                db.collection("ordenes")
+                    .whereEqualTo("id", idOrden)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents[0]
+                            val docRef = db.collection("ordenes").document(document.id)
+
+                            docRef.update("pagado", true)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Orden marcada como pagada", Toast.LENGTH_SHORT).show()
+
+                                    OrdenManager.limpiarOrden()
+                                    val intent = Intent(this, TipoOrdenActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Error al actualizar la orden", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Toast.makeText(this, "No se encontró la orden", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al buscar la orden", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
         }
+
 
     }
     fun actualizarTotales() {
